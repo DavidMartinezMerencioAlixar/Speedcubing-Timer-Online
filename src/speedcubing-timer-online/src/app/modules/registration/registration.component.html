@@ -1,0 +1,23 @@
+<div [hidden]="submitted" class="container">
+    <h1>Registration page</h1>
+    <!-- {{model | json}} -->
+    <form (ngSubmit)="onSubmit()" #userForm="ngForm">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" class="forms-control" id="username" name="username" title="Username"
+            #username="ngModel" required [(ngModel)]="model.username">
+            <div [hidden]="username.valid || username.pristine" class="alert alert-danger">
+                Username is required
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="forms-control" id="password" name="password" title="Password"
+            #password="ngModel" required [(ngModel)]="model.password">
+            <div [hidden]="password.valid || password.pristine" class="alert alert-danger">
+                Password is required
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary" [disabled]="!userForm.form.valid">Register</button>
+    </form>
+</div>
