@@ -1,7 +1,7 @@
 # Speedcubing Timer Online
 
 #### Curso Escolar 2022-2023
-#### Autor: [David Martínez Merencio](https://github.com/DavidMartinezMerencioAlixar.)
+#### Autor: [David Martínez Merencio](https://github.com/DavidMartinezMerencioAlixar)
 #### Tutor: [Antonio Gabriel González Casado](https://github.com/antonio-gabriel-gonzalez-casado)
 #### Fecha de Inicio: 14-03-2023
 #### Fecha de Finalización: DD-MM-YYYY
@@ -19,9 +19,10 @@ Mi aplicación constaría de una página web para poder competir en velocidad co
 
 ## Estructura del Proyecto
 
-Este proyecto será el Frontend del proyecto, el cual hará uso de la tecnología Angular.
+Este prouecto se divide en un Backend (API), que hará uso de NodeJS y Express, y en un Frontend, que hará uso de Angular.
 
 La estructura del proyecto será la siguiente:
-- src
+- src-api
+- src-frontend
 - docs
 - README.md
