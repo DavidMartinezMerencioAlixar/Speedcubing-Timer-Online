@@ -1,4 +1,4 @@
-# Speedcubing Timer Online
+# Swift Cube
 
 #### Curso Escolar 2022-2023
 #### Autor: [David Martínez Merencio](https://github.com/DavidMartinezMerencioAlixar)
