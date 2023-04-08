@@ -15,7 +15,7 @@ Mi aplicación constaría de una página web para poder competir en velocidad co
 - **¿Qué va a hacer la aplicación?** Medirá tus tiempos con el cubo de Rubik
 - **¿Cuál es su atractivo principal?** Podrás competir con otras personas, entrando en salas comunes en la que se comparán los tiempos
 - **¿Qué problema concreto va a resolver?** La falta de facilidad a la hora de competir online en el mundo del speedcubing
-- **¿Qué necesidad va a cubrir?** Poder competir estando a distancia de una manerá muy cómo y automátizada
+- **¿Qué necesidad va a cubrir?** Poder competir estando a distancia de una manerá muy cómoda y automatizada
 
 ## Estructura del Proyecto
 
