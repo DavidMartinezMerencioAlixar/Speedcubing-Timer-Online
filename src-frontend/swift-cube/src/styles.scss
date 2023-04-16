@@ -41,7 +41,12 @@ $custom-theme: mat.define-light-theme((
 
 @include mat.all-component-themes($custom-theme);
 
+@font-face {
+    font-family: 'Alkatra';
+    src: url(assets/fonts/Alkatra/Alkatra.ttf) format("truetype");
+}
+
 body {
     margin: 0;
-    font-family: Georgia, 'Times New Roman', Times, serif;
+    font-family: 'Alkatra';
 }

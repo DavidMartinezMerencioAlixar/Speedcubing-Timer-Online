@@ -10,6 +10,8 @@ import { CoreModule } from './core/core.module';
 import { SkeletonComponent } from './layout/skeleton/skeleton.component';
 import { FooterComponent } from './layout/footer/footer.component';
 import { NavigationComponent } from './layout/navigation/navigation.component';
+import { NavigationLoggedComponent } from './layout/navigation-logged/navigation-logged.component';
+import { DynamicComponentDirective } from './directives/dynamic-component.directive';
 
 @NgModule({
   declarations: [
@@ -17,6 +19,8 @@ import { NavigationComponent } from './layout/navigation/navigation.component';
     SkeletonComponent,
     FooterComponent,
     NavigationComponent,
+    NavigationLoggedComponent,
+    DynamicComponentDirective,
   ],
   imports: [
     BrowserModule,

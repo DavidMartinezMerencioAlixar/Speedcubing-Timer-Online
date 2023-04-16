@@ -3,6 +3,11 @@ img {
     height: auto;
 }
 
+#logout-img {
+    width: 40px;
+    height: auto;
+}
+
 nav {
     background-color: #D9D9D9;
     width: 100%;
@@ -28,6 +33,12 @@ nav {
     top: 18px;
 }
 
-#user-img:hover {
+#logout {
+    position: absolute;
+    left: 20px;
+    top: 30px;
+}
+
+#logout-img:hover {
     cursor: pointer;
 }
