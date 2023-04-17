@@ -12,7 +12,8 @@ export class SkeletonComponent implements AfterViewInit {
   @ViewChild(DynamicComponentDirective, { static: true }) dynamic!: DynamicComponentDirective;
 
   ngAfterViewInit(): void {
-    this.generateComponent(0);
+    const navigation = localStorage.getItem("loggedUser") === "y" ? 1 : 0;
+    this.generateComponent(navigation);
   }
 
   generateComponent(idx: number):void {

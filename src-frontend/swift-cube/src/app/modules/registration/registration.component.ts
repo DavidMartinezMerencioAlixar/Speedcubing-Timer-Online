@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, Input } from '@angular/core';
 import { User } from './user.model';
 
 @Component({
@@ -6,19 +6,35 @@ import { User } from './user.model';
   templateUrl: './registration.component.html',
   styleUrls: ['./registration.component.scss']
 })
-export class RegistrationComponent {
-  model = this.newUser();
+export class RegistrationComponent implements AfterViewInit {
+  ngAfterViewInit(): void {
+    const formContainer = document.getElementById("formContainer");
+    if (formContainer != null) formContainer.scrollIntoView();
+  }
 
-  submitted = false;
+  user: User = this.newUser();
 
   onSubmit() {
-    this.submitted = true;
+    alert("onSubmit");
     localStorage.setItem("loggedUser", "y");
-    localStorage.setItem("username", this.model.username);
+    localStorage.setItem("username", this.user.username);
     window.location.href = "";
   }
 
   newUser() {
-    return new User("", "");
+    return new User("", "", "");
+  }
+
+  matchPasswords() {
+    try {
+      return document.querySelectorAll("input")[1].className.match("ng-touched") === null ||
+      document.querySelectorAll("input")[2].className.match("ng-touched") === null ||
+      this.user.password === this.user.confirmPassword
+    } catch {
+      console.log("error");
+      
+      return false;
+    }
+
   }
 }

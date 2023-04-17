@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { SkeletonComponent } from '../skeleton/skeleton.component';
 
 @Component({
   selector: 'app-navigation-logged',
@@ -8,7 +7,7 @@ import { SkeletonComponent } from '../skeleton/skeleton.component';
 })
 export class NavigationLoggedComponent {
   toLoggedOutNavigation() {
-    const skeletonComponent =  new SkeletonComponent();
-    skeletonComponent.generateComponent(0);
+    localStorage.setItem("loggedUser", "n");
+    location.reload();
   }
 }
