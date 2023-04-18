@@ -1,0 +1,30 @@
+<div id="loginDiv" class="container-flex">
+    <div id="formContainer" class="container-flex">
+        <h1 id="loginTitle">Login</h1>
+        <div class="centeredContent">
+            <form id="loginForm" (ngSubmit)="onSubmit()" #loginForm="ngForm">
+                <!-- {{ user | json }} -->
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <!-- <input type="text" class="form-control" id="username" required [(ngModel)]="user.username"
+                        name="username" placeholder="username"> -->
+                    <app-input inputType="text" inputClass="form-control showValidation" inputId="username" [isRequired]="true"
+                        [(inputNgModel)]="user.username" inputPlaceholder="username" [inputName]="'username'"></app-input>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <!-- <input type="password" class="form-control" id="password" required [(ngModel)]="user.password"
+                        name="password" placeholder="password" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$"> -->
+                    <app-input inputType="password" inputClass="form-control showValidation" inputId="password" [isRequired]="true"
+                        [(inputNgModel)]="user.password" inputPlaceholder="password" [inputName]="'password'"></app-input>
+                </div>
+                <diV class="centeredContent">
+                    <app-button buttonType="submit" buttonText="Login" [isDisabled]="!loginForm.form.valid"></app-button>
+                </diV>
+            </form>
+        </div>
+        <div id="registerLink">
+            Don't have an account? <a href="register">Register here</a>
+        </div>
+    </div>
+</div>

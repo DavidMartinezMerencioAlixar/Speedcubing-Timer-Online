@@ -10,4 +10,8 @@ export class NavigationLoggedComponent {
     localStorage.setItem("loggedUser", "n");
     location.reload();
   }
+
+  toHome() {
+    location.href = "";
+  }
 }

@@ -1,4 +1,4 @@
-#registrationDiv {
+#loginDiv {
     background-image: url(/assets/img/form-background.png);
     background-repeat: no-repeat;
     background-size: cover;
@@ -12,14 +12,10 @@
     border-radius: 20px;
     width: 900px;
     height: 650px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
     padding: 40px;
 }
 
-#registerForm {
+#loginForm, #formContainer {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -32,10 +28,10 @@
 }
 
 .form-group {
-    margin-bottom: 44px;
+    margin-bottom: 70px;
 }
 
-#registerTitle {
+#loginTitle {
     font-weight: bold;
     font-size: 40px;
     font-family: 'Alkatra', sans-serif;
@@ -45,4 +41,20 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+#registerLink {
+    position: absolute;
+    bottom: 15%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#registerLink > a {
+    color: blue;
+    text-decoration: none;
+}
+
+#registerLink > a:hover {
+    text-decoration: underline;
 }

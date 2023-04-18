@@ -1,28 +1,40 @@
 <div id="registrationDiv" class="container-flex">
     <div id="formContainer" class="container-flex">
         <h1 id="registerTitle">Register</h1>
-        <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
-            {{ user | json }}
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" class="form-control" id="username" required [(ngModel)]="user.username"
-                    name="username" placeholder="username">
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" required [(ngModel)]="user.password"
-                    name="password" placeholder="password" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$">
-            </div>
-            <div class="form-group">
-                <label for="confirmPassword">Repeat Password</label>
-                <input type="password" class="form-control" id="confirmPassword" required [(ngModel)]="user.confirmPassword"
-                    name="confirmPassword" placeholder="confirm password" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$">
-                <br>
-                <div *ngIf="!matchPasswords()" class="alert alert-danger">
-                    Passwords don't match
+        <div class="centeredContent">
+            <form id="registerForm" (ngSubmit)="onSubmit()" #registerForm="ngForm">
+                <!-- {{ user | json }} -->
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <!-- <input type="text" class="form-control" id="username" required [(ngModel)]="user.username"
+                        name="username" placeholder="username"> -->
+                    <app-input inputType="text" inputClass="form-control showValidation" inputId="username" [isRequired]="true"
+                        [(inputNgModel)]="user.username" inputPlaceholder="username" [inputName]="'username'"></app-input>
                 </div>
-            </div>
-            <button type="submit" [disabled]="!registerForm.form.valid">Register</button>
-        </form>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <!-- <input type="password" class="form-control" id="password" required [(ngModel)]="user.password"
+                        name="password" placeholder="password" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$"> -->
+                    <app-input inputType="password" inputClass="form-control showValidation" inputId="password" [isRequired]="true"
+                        [(inputNgModel)]="user.password" inputPlaceholder="password" [inputName]="'password'"
+                        inputPattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$"></app-input>
+                </div>
+                <div class="form-group">
+                    <label for="confirmPassword">Repeat Password</label>
+                    <!-- <input type="password" class="form-control" id="confirmPassword" required [(ngModel)]="user.confirmPassword"
+                        name="confirmPassword" placeholder="confirm password" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$"> -->
+                    <app-input inputType="password" inputClass="form-control showValidation" inputId="confirmPassword" [isRequired]="true"
+                        [(inputNgModel)]="user.confirmPassword" inputPlaceholder="confirm password" [inputName]="'confirmPassword'"
+                        inputPattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$"></app-input>
+                    <br>
+                    <div *ngIf="!matchPasswords()" class="alert alert-danger">
+                        Passwords don't match
+                    </div>
+                </div>
+                <diV class="centeredContent">
+                    <app-button buttonType="submit" buttonText="Register" [isDisabled]="!registerForm.form.valid"></app-button>
+                </diV>
+            </form>
+        </div>
     </div>
 </div>

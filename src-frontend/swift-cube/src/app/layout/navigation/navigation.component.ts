@@ -7,8 +7,10 @@ import { Component } from '@angular/core';
 })
 export class NavigationComponent {
   toLoggedInNavigation() {
-    // localStorage.setItem("logged", "yes");
-    // location.reload();
-    location.href = "register";
+    location.href = "login";
+  }
+
+  toHome() {
+    location.href = "";
   }
 }

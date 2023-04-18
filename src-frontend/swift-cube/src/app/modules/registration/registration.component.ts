@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, Input } from '@angular/core';
-import { User } from './user.model';
+import { AfterViewInit, Component } from '@angular/core';
+import { User } from '../user.model';
 
 @Component({
   selector: 'app-registration',
@@ -26,15 +26,8 @@ export class RegistrationComponent implements AfterViewInit {
   }
 
   matchPasswords() {
-    try {
       return document.querySelectorAll("input")[1].className.match("ng-touched") === null ||
-      document.querySelectorAll("input")[2].className.match("ng-touched") === null ||
-      this.user.password === this.user.confirmPassword
-    } catch {
-      console.log("error");
-      
-      return false;
-    }
-
+        document.querySelectorAll("input")[2].className.match("ng-touched") === null ||
+        this.user.password === this.user.confirmPassword
   }
 }
