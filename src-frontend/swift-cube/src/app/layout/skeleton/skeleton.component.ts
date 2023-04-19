@@ -23,17 +23,7 @@ export class SkeletonComponent implements AfterViewInit {
   }
 
   NAVIGATIONS = [
-    {
-      data: {
-        text: "Logged out navigation"
-      },
-      component: NavigationComponent
-    },
-    {
-      data: {
-        text: "Logged in navigation"
-      },
-      component: NavigationLoggedComponent
-    }
+    { component: NavigationComponent },
+    { component: NavigationLoggedComponent }
   ];
 }
