@@ -50,3 +50,22 @@ body {
     margin: 0;
     font-family: 'Alkatra';
 }
+
+.form-control {
+    border-radius: 20px;
+    width: 500px;
+    height: 50px;
+}
+
+.form-control::placeholder {
+    color: #959595;
+    font-style: italic;
+}
+
+.showValidation.ng-touched.ng-valid[required], .ng-touched.ng-valid.required {
+    border-left: 5px solid #42A948;
+}
+
+.showValidation.ng-dirty.ng-invalid:not(form) {
+    border-left: 5px solid #A94442;
+}
