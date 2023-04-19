@@ -3,7 +3,7 @@ var router = express.Router();
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-  res.send('user location');
+  res.send('party location');
 });
 
 module.exports = router;
