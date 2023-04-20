@@ -6,7 +6,7 @@ var PartySchema = new Schema({
         type: Schema.ObjectId,
         ref: "User",
         required: true,
-        index:{
+        index: {
             unique: true
         }
     },
@@ -14,7 +14,7 @@ var PartySchema = new Schema({
         type: Schema.ObjectId,
         ref: "Solve",
         required: true,
-        index:{
+        index: {
             unique: true
         }
     },

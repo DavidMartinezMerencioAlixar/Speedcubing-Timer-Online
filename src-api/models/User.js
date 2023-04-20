@@ -1,13 +1,13 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var bcrypt = require('bcryptjs')
-var SALT_WORK_FACTOR = 6;
+const SALT_WORK_FACTOR = 6;
 
 var UserSchema = new Schema({
     username: {
         type: String,
         required: true,
-        index:{
+        index: {
             unique: true
         }
     },

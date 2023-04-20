@@ -5,7 +5,7 @@ var CubeSchema = new Schema({
     name: {
         type: String,
         required: true,
-        index:{
+        index: {
             unique: true
         }
     },

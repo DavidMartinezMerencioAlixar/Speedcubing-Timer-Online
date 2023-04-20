@@ -8,7 +8,6 @@ import { Component, Input } from '@angular/core';
 export class ButtonComponent {
   @Input() buttonText: string = "text";
   @Input() buttonClass: string = "";
-  @Input() onClick: Function = () => {};
   @Input() isDisabled: boolean = false;
   @Input() buttonType: "button" | "menu" | "reset" | "submit" = "button";
 
