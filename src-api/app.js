@@ -1,16 +1,18 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var dotenv = require('dotenv').config();
-var cors = require('cors');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const dotenv = require('dotenv').config();
+const cors = require('cors');
+const cryptojs = require('crypto-js');
+const secretKey = "/nm8z3}KkeXVpsL";
 
-var usersRouter = require('./routes/users');
-var solvesRouter = require('./routes/solves');
-var roomsRouter = require('./routes/rooms');
-var partiesRouter = require('./routes/parties');
-var cubesRouter = require('./routes/cubes');
+const usersRouter = require('./routes/users');
+const solvesRouter = require('./routes/solves');
+const roomsRouter = require('./routes/rooms');
+const partiesRouter = require('./routes/parties');
+const cubesRouter = require('./routes/cubes');
 
 var mongoose = require('mongoose');
 mongoose.set('strictQuery', false);
@@ -19,8 +21,8 @@ mongoose.connect(process.env.DB_URI, { useNewUrlParser: true })
   .then(() => console.log('Mongoose connection successful!'))
   .catch((err) => console.error(err));
 
-var db = mongoose.connection;
-var app = express();
+const db = mongoose.connection;
+const app = express();
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -32,6 +34,18 @@ app.use(cors({
   allowedHeaders: ['Content-Type'],
   methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
+app.use((req, res, next) => {
+  for (const field in req.body) {
+    const fieldValue = req.body[field];
+    const isCryptoJSEncryptedField = /^U2FsdGVkX1/.test(fieldValue);
+    if (isCryptoJSEncryptedField) {
+      const decryptedBytes = cryptojs.AES.decrypt(fieldValue, secretKey);
+      const decryptedValue = decryptedBytes.toString(cryptojs.enc.Utf8);
+      req.body[field] = decryptedValue;
+    }
+  }
+  next();
+});
 
 app.use('/users', usersRouter);
 app.use('/solves', solvesRouter);

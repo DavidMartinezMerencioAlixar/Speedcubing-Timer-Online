@@ -79,7 +79,6 @@ router.post('/login', [
 
 /* PUT an user */
 router.put("/", function (req, res, next) {
-  console.log(req.query.oldUsername, req.query.newUsername, req.body.oldPassword, req.body.newPassword);
   User.findOne({ username: req.query.oldUsername }).exec(function (err, user) {
     if (err) return res.status(500).send(err);
     if (user != null) {

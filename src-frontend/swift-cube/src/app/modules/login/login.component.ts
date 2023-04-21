@@ -1,5 +1,6 @@
 import { Component, AfterViewInit } from '@angular/core';
 import { User } from '../user.model';
+import * as CryptoJS from "crypto-js";
 
 @Component({
   selector: 'app-login',
@@ -14,25 +15,20 @@ export class LoginComponent implements AfterViewInit {
 
   user: User = this.newUser();
 
-  // onSubmit() {
-  //   alert("onSubmit");
-  //   localStorage.setItem("loggedUser", "y");
-  //   localStorage.setItem("username", this.user.username);
-  //   window.location.href = "";
-  // }
-
   newUser() {
     return new User("", "", "");
   }
 
   async loginUser() {
     const URL = "http://localhost:5000/users/login";
+    const encryptedPassword = CryptoJS.AES.encrypt(this.user.password, "/nm8z3}KkeXVpsL").toString();
+    
     const response = await fetch(URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ username: this.user.username, password: this.user.password })
+      body: JSON.stringify({ username: this.user.username, password: encryptedPassword })
     }).then(response => {
       if (response.status === 200) {
         localStorage.setItem("loggedUser", "y");
