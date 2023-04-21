@@ -3,7 +3,7 @@ var router = express.Router();
 var { body, validationResult } = require('express-validator');
 var User = require("../models/User");
 var bcrypt = require('bcryptjs')
-const SALT_WORK_FACTOR = 4;
+const SALT_WORK_FACTOR = 10;
 
 /* GET all users */
 router.get('/', function (req, res, next) {
@@ -30,7 +30,6 @@ router.post('/', [
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-  let encryptedUsername;
   User.create({
     username: req.body.username,
     password: req.body.password
@@ -39,25 +38,73 @@ router.post('/', [
       if (err) return next(err);
       bcrypt.hash(user.username, salt, function (err, hash) {
         if (err) return next(err);
-        encryptedUsername = hash;
-        console.log(encryptedUsername);
-        res.json({ username: encryptedUsername });
+        const encryptedUsername = hash;
+        res.status(200).json({ username: encryptedUsername });
       });
     });
+  }).catch(error => res.status(204).send());
+});
+
+/* Check if an user exists and if the password is correct */
+router.post('/login', [
+  body('username', 'Enter a valid username').exists().isLength({ max: 30 }),
+  body('password', 'Enter a valid password').exists().isLength({ min: 8, max: 200 })
+], function (req, res) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
   }
-  ).catch(error => res.status(204).send());
+  User.findOne({ username: req.body.username }).exec(function (err, user) {
+    if (err) return res.status(500).send(err);
+    if (user != null) {
+      bcrypt.compare(req.body.password, user.password, function (err2, res2) {
+        if (err2) return res.status(500).send(err2);
+        if (res2) {
+          bcrypt.genSalt(SALT_WORK_FACTOR, function (err3, salt) {
+            if (err3) return next(err3);
+            bcrypt.hash(user.username, salt, function (err4, hash) {
+              if (err4) return next(err4);
+              return res.status(200).json({ username: hash });
+            });
+          });
+        } else {
+          return res.status(204).send();
+        }
+      });
+    } else {
+      return res.status(204).send();
+    }
+  });
 });
 
 /* PUT an user */
-router.put("/:username", function (req, res, next) {
-  User.findOneAndUpdate(
-    { username: req.params.username },
-    req.body,
-    function (err, user) {
-      if (err) res.status(500).send(err);
-      else res.sendStatus(200);
+router.put("/", function (req, res, next) {
+  console.log(req.query.oldUsername, req.query.newUsername, req.body.oldPassword, req.body.newPassword);
+  User.findOne({ username: req.query.oldUsername }).exec(function (err, user) {
+    if (err) return res.status(500).send(err);
+    if (user != null) {
+      bcrypt.compare(req.body.oldPassword, user.password, function (err2, res2) {
+        if (err2) return res.status(500).send(err2);
+        if (res2) {
+          bcrypt.hash(req.body.newPassword, SALT_WORK_FACTOR, function (err3, hash) {
+            if (err3) return next(err3);
+            User.updateOne({ username: req.query.oldUsername },
+              { username: req.query.newUsername, password: hash }, function (err3, res3) {
+                if (err3) return next(err3);
+                bcrypt.hash(user.username, SALT_WORK_FACTOR, function (err4, hash) {
+                  if (err4) return next(err4);
+                  return res.status(200).json({ username: hash });
+                });
+              });
+          });
+        } else {
+          return res.status(204).send();
+        }
+      });
+    } else {
+      return res.status(204).send();
     }
-  );
+  });
 });
 
 /* DELETE an user */

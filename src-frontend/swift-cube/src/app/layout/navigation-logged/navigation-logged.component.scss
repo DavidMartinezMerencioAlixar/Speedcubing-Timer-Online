@@ -27,7 +27,7 @@ nav {
     vertical-align: middle;
 }
 
-#login {
+#userData {
     position: absolute;
     right: 40px;
     top: 18px;
@@ -39,6 +39,6 @@ nav {
     top: 30px;
 }
 
-#logout-img:hover, #logo:hover {
+#logout-img:hover, #logo:hover, #userData:hover {
     cursor: pointer;
 }

@@ -1,4 +1,4 @@
-#registrationDiv {
+#editDiv {
     background-image: url(/assets/img/form-background.png);
     background-repeat: no-repeat;
     background-size: cover;
@@ -19,7 +19,7 @@
     padding: 40px;
 }
 
-#registerForm {
+#editForm {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -35,7 +35,7 @@
     margin-bottom: 44px;
 }
 
-#registerTitle {
+#editTitle {
     font-weight: bold;
     font-size: 40px;
     font-family: 'Alkatra', sans-serif;
@@ -45,20 +45,4 @@
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-#loginLink {
-    position: absolute;
-    bottom: 10%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-#loginLink > a {
-    color: blue;
-    text-decoration: none;
-}
-
-#loginLink > a:hover {
-    text-decoration: underline;
 }

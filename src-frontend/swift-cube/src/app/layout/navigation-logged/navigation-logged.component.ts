@@ -14,10 +14,15 @@ export class NavigationLoggedComponent implements AfterViewInit {
   toLoggedOutNavigation() {
     localStorage.setItem("loggedUser", "n");
     localStorage.removeItem("user.data");
-    location.reload();
+    localStorage.removeItem("user.name");
+    window.location.href = "";
+  }
+
+  toEditUser() {
+    window.location.href = "userdata";
   }
 
   toHome() {
-    location.href = "";
+    window.location.href = "";
   }
 }

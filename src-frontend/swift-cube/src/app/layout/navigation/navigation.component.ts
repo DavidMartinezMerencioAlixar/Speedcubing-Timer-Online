@@ -7,10 +7,10 @@ import { Component } from '@angular/core';
 })
 export class NavigationComponent {
   toLoggedInNavigation() {
-    location.href = "login";
+    window.location.href = "login";
   }
 
   toHome() {
-    location.href = "";
+    window.location.href = "";
   }
 }

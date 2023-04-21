@@ -8,8 +8,7 @@ import { User } from '../user.model';
 })
 export class RegistrationComponent implements AfterViewInit {
   ngAfterViewInit(): void {
-    const formContainer = document.getElementById("formContainer");
-    if (formContainer != null) formContainer.scrollIntoView();
+    (<HTMLInputElement>document.getElementById("formContainer")).scrollIntoView();
   }
 
   user: User = this.newUser();
@@ -37,19 +36,18 @@ export class RegistrationComponent implements AfterViewInit {
         if (response.status === 200) {
           localStorage.setItem("loggedUser", "y");
           response.json().then(user => {
-            console.log(user.username);
             localStorage.setItem("user.data", user.username);
             localStorage.setItem("user.name", this.user.username);
           });
           window.location.href = "";
         } else {
-          location.reload();
+          window.location.reload();
         }
       }).catch(error => {
         console.error("Error creating an user:", error);
       });
     } else {
-      window.location.href = "register";
+      window.location.reload();
     }
   }
 }
