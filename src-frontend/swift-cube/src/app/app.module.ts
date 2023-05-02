@@ -12,6 +12,7 @@ import { FooterComponent } from './layout/footer/footer.component';
 import { NavigationComponent } from './layout/navigation/navigation.component';
 import { NavigationLoggedComponent } from './layout/navigation-logged/navigation-logged.component';
 import { DynamicComponentDirective } from './directives/dynamic-component.directive';
+import { ScrambleLocalComponent } from './layout/scramble-local/scramble-local.component';
 
 @NgModule({
   declarations: [
@@ -21,6 +22,7 @@ import { DynamicComponentDirective } from './directives/dynamic-component.direct
     NavigationComponent,
     NavigationLoggedComponent,
     DynamicComponentDirective,
+    ScrambleLocalComponent,
   ],
   imports: [
     BrowserModule,

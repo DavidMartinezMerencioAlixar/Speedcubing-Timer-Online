@@ -1,0 +1,15 @@
+#mainDiv {
+    background-color: #FEFFCC;
+    height: 972px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#time {
+    font-size: 6rem;
+    font-weight: bold;
+    font-variant-numeric: tabular-nums;
+    font-family: 'Alkatra', monospace;
+}
