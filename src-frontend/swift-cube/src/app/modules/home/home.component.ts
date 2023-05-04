@@ -16,7 +16,18 @@ export class HomeComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     const formContainer = document.getElementById("scrambleDiv");
-    if (formContainer != null) formContainer.scrollIntoView();
+    formContainer?.scrollIntoView();
+
+    const cubeNames = <HTMLSelectElement>document.getElementById("cubeNames");
+    cubeNames?.addEventListener("change", () => {
+      this.getCubeData(cubeNames.options[cubeNames.selectedIndex].value);
+      setTimeout(this.generateScramble, 100);
+    });
+
+    this.getAllCubes();
+    setTimeout(() => { this.getCubeData(cubeNames.options[cubeNames.selectedIndex].value); }, 100);
+    setTimeout(this.generateScramble, 100);
+    
   }
 
   constructor() {
@@ -86,43 +97,69 @@ export class HomeComponent implements AfterViewInit {
   stopTimer() {
     clearInterval(this.timerInterval);
     this.runningTimer = false;
+    this.generateScramble();
+  }
+
+  generateScramble() {
+    const movementTypes = localStorage.getItem("cube.movementTypes") || "";
+    const totalMovs = Number.parseInt(localStorage.getItem("cube.movements_number") || "0");
+
+    const possibleMovs = movementTypes.split(" ");
+    const numPossibleMovs = possibleMovs.length;
+    let scramble = "", actualMov, lastMov = "";
+
+    for (let i = 0; i < totalMovs; i++) {
+      /* Generates a new letter until it doesn't match the last one generated */
+      do {
+        actualMov = possibleMovs[Math.floor(Math.random() * (numPossibleMovs - 1))];
+      } while (actualMov.charAt(0) === lastMov.charAt(0));
+      lastMov = actualMov;
+
+      /* Adds the movement to the final scramble */
+      scramble += " " + actualMov;
+    }
+
+    /* Prints the new scramble in the web */
+    const scrambleText = document.getElementById("scramble");
+    if (scrambleText != null) scrambleText.textContent = scramble;
+  }
+
+  async getCubeData(cubeName: String) {
+    const URL = `http://localhost:5000/cubes/${cubeName}`;
+    
+    const response = await fetch(URL
+    ).then(response => {
+      if (response.status === 200) {
+        response.json().then(cube => {
+          localStorage.setItem("cube.movementTypes", cube.movement_types);
+          localStorage.setItem("cube.movements_number", cube.movements_number);
+        });
+      }
+    }).catch(error => {
+      console.error("Error getting cube data:", error);
+    });
+  }
+
+  async getAllCubes() {
+    const URL = "http://localhost:5000/cubes";
+    
+    const response = await fetch(URL
+    ).then(response => {
+      if (response.status === 200) {
+        response.json().then(cubes => {
+          const cubeNames = document.getElementById("cubeNames");
+          if (cubeNames != null) {
+            cubes.forEach((cube: any) => {
+              const newOption = document.createElement("option");
+              newOption.value = cube.name;
+              newOption.textContent = cube.name;
+              cubeNames.appendChild(newOption);
+            });
+          }
+        });
+      }
+    }).catch(error => {
+      console.error("Error getting cube data:", error);
+    });
   }
 }
-
-
-
-  // startTime: any, endTime: any, elapsedTime: any, timerInterval: any;
-
-  // startTimer() {
-  //   if (!timerInterval) {
-  //     startTime = new Date().getTime();
-  //     timerInterval = setInterval(updateTimer, 10);
-  //   }
-  // }
-
-  // stopTimer() {
-  //   if (timerInterval) {
-  //     clearInterval(timerInterval);
-  //     endTime = new Date().getTime();
-  //     elapsedTime = endTime - startTime;
-  //     timerInterval = null;
-  //   }
-  // }
-
-  // resetTimer() {
-  //   clearInterval(timerInterval);
-  //   timerInterval = null;
-  //   elapsedTime = null;
-  //   document.getElementById("timer").innerHTML = "00:00:000";
-  // }
-
-  // updateTimer() {
-  //   var now = new Date().getTime();
-  //   elapsedTime = now - startTime;
-  //   var minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60));
-  //   var seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000);
-  //   var milliseconds = Math.floor((elapsedTime % 1000));
-  //   minutes = (minutes < 10) ? "0" + minutes : minutes;
-  //   seconds = (seconds < 10) ? "0" + seconds : seconds;
-  //   milliseconds = (milliseconds < 10) ? "00" + milliseconds : (milliseconds < 100) ? "0" + milliseconds : milliseconds;
-  //   document.getElementById("timer").innerHTML = minutes + ":" + seconds + ":" + milliseconds;
