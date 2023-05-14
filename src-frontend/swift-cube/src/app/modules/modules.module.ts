@@ -7,6 +7,7 @@ import { ButtonComponent } from './commons/button/button.component';
 import { InputComponent } from './commons/input/input.component';
 import { LoginComponent } from './login/login.component';
 import { EditUserComponent } from './edit-user/edit-user.component';
+import { VisualScrambleComponent } from './visual-scramble/visual-scramble.component';
 
 
 
@@ -18,6 +19,7 @@ import { EditUserComponent } from './edit-user/edit-user.component';
     InputComponent,
     LoginComponent,
     EditUserComponent,
+    VisualScrambleComponent,
   ],
   imports: [
     CommonModule,

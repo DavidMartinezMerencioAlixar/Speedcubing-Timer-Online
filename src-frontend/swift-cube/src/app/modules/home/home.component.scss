@@ -1,10 +1,19 @@
 #mainDiv {
     background-color: #FEFFCC;
     height: 972px;
+    height: 100vh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    position: relative;
+}
+
+#timerDiv {
+    display: flex;
+    justify-content: center;
+    // align-items: center;
+    align-items: center;
 }
 
 #time {
@@ -12,4 +21,10 @@
     font-weight: bold;
     font-variant-numeric: tabular-nums;
     font-family: 'Alkatra', monospace;
+}
+
+app-visual-scramble {
+    position: absolute;
+    top: 0;
+    right: 0;
 }

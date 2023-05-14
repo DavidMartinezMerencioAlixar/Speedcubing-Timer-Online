@@ -1,0 +1,77 @@
+#visualCubeScramble {
+    background-color: #D9D9D9;
+    border: 1px solid black;
+    width: 315px;
+    height: 250px;
+    position: relative;
+}
+
+.face {
+    height: 60px;
+    width: 60px;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    position: absolute;
+}
+
+.face div {
+    border: 1px solid black;
+    margin-top: 0.25px;
+    margin-left: 0.25px;
+    height: 19px;
+    width: 19px;
+}
+
+.upFace {
+    top: 30px;
+    left: 95px;
+}
+
+.leftFace {
+    top: 95px;
+    left: 30px;
+}
+
+.frontFace {
+    top: 95px;
+    left: 95px;
+}
+
+.rightFace {
+    top: 95px;
+    left: 160px;
+}
+
+.backFace {
+    top: 95px;
+    left: 225px;
+}
+
+.downFace {
+    top: 160px;
+    left: 95px;
+}
+
+.colorWhite {
+    background-color: #EFEFEF;
+}
+
+.colorOrange {
+    background-color: #CE8D51;
+}
+
+.colorGreen {
+    background-color: #40A05B;
+}
+
+.colorRed {
+    background-color: #C24848;
+}
+
+.colorBlue {
+    background-color: #406CAF;
+}
+
+.colorYellow {
+    background-color: #D6D157;
+}
