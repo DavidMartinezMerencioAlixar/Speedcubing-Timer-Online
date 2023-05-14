@@ -19,13 +19,22 @@ export class HomeComponent implements AfterViewInit {
     formContainer?.scrollIntoView();
 
     const cubeNames = <HTMLSelectElement>document.getElementById("cubeNames");
+    const notAvailable = <HTMLSelectElement>document.getElementById("notAvailable");
+    const visualScrambleDiv = <HTMLSelectElement>document.getElementById("visualScrambleDiv");
     cubeNames?.addEventListener("change", () => {
       const selectedCube = cubeNames.options[cubeNames.selectedIndex].value;
+      if (selectedCube.indexOf("3x3x3") !== -1) {
+        visualScrambleDiv.style.display = "block";
+        notAvailable.style.display = "none";
+      } else {
+        visualScrambleDiv.style.display = "none";
+        notAvailable.style.display = "block";
+      }
       this.getCubeData(selectedCube);
     });
 
     const cubeNameSpan = <HTMLSelectElement>document.getElementById("cubeNameSpan");
-    cubeNameSpan?.addEventListener("click", this.generateScramble);
+    cubeNameSpan?.addEventListener("click", () => { this.generateScramble(); });
 
     this.getAllCubes();
     setTimeout(() => { this.getCubeData(cubeNames.options[cubeNames.selectedIndex].value); }, 200);
@@ -111,7 +120,6 @@ export class HomeComponent implements AfterViewInit {
     const numPossibleMovs = possibleMovs.length;
     let scramble = "", actualMov, lastMov = "", lastMovLetter, letter1, letter2;
     let validMove = false;
-
     for (let i = 0; i < totalMovs; i++) {
       /* Generates a new letter until it doesn't match the last one generated */
       do {
@@ -157,43 +165,49 @@ export class HomeComponent implements AfterViewInit {
 
     upFace.forEach(piece => {
       upFaceArray.push((piece as HTMLElement));
+      (piece as HTMLElement).className = "colorWhite";
     });
     leftFace.forEach(piece => {
       leftFaceArray.push((piece as HTMLElement));
+      (piece as HTMLElement).className = "colorOrange";
     });
     frontFace.forEach(piece => {
       frontFaceArray.push((piece as HTMLElement));
+      (piece as HTMLElement).className = "colorGreen";
     });
     rightFace.forEach(piece => {
       rightFaceArray.push((piece as HTMLElement));
+      (piece as HTMLElement).className = "colorRed";
     });
     backFace.forEach(piece => {
       backFaceArray.push((piece as HTMLElement));
+      (piece as HTMLElement).className = "colorBlue";
     });
     downFace.forEach(piece => {
       downFaceArray.push((piece as HTMLElement));
+      (piece as HTMLElement).className = "colorYellow";
     });
 
     for (const movement of scrambleArray) {
-      switch (movement) { //Los movimientos D y U funcionan bien, los demás tienen que tener otra rotación previa diferente para que hagan los cambios correctos
+      switch (movement) {
         case "U":
           this.clockwiseMovement(upFaceArray, leftFaceArray, frontFaceArray, rightFaceArray, backFaceArray);
           break;
         case "L":
-          this.clockwiseMovement(leftFaceArray, this.rotateArrayClockwise(backFaceArray), this.rotateArrayAnticlockwise(downFaceArray),
-            this.rotateArrayAnticlockwise(frontFaceArray), this.rotateArrayAnticlockwise(upFaceArray));
+          this.clockwiseMovement(leftFaceArray, this.rotateArrayAnticlockwise(backFaceArray), this.rotateArrayClockwise(downFaceArray),
+            this.rotateArrayClockwise(frontFaceArray), this.rotateArrayClockwise(upFaceArray));
           break;
         case "F":
-          this.clockwiseMovement(frontFaceArray, this.rotateArrayClockwise(leftFaceArray), downFaceArray,
-            this.rotateArrayAnticlockwise(rightFaceArray), this.rotateArrayDouble(upFaceArray));
+          this.clockwiseMovement(frontFaceArray, this.rotateArrayAnticlockwise(leftFaceArray), downFaceArray,
+            this.rotateArrayClockwise(rightFaceArray), this.rotateArrayDouble(upFaceArray));
           break;
         case "R":
-          this.clockwiseMovement(rightFaceArray, this.rotateArrayClockwise(frontFaceArray), this.rotateArrayClockwise(downFaceArray),
-            this.rotateArrayAnticlockwise(backFaceArray), this.rotateArrayClockwise(upFaceArray));
+          this.clockwiseMovement(rightFaceArray, this.rotateArrayAnticlockwise(frontFaceArray), this.rotateArrayAnticlockwise(downFaceArray),
+            this.rotateArrayClockwise(backFaceArray), this.rotateArrayAnticlockwise(upFaceArray));
           break;
         case "B":
-          this.clockwiseMovement(backFaceArray, this.rotateArrayClockwise(rightFaceArray), this.rotateArrayDouble(downFaceArray),
-            this.rotateArrayAnticlockwise(leftFaceArray), upFaceArray);
+          this.clockwiseMovement(backFaceArray, this.rotateArrayAnticlockwise(rightFaceArray), this.rotateArrayDouble(downFaceArray),
+            this.rotateArrayClockwise(leftFaceArray), upFaceArray);
           break;
         case "D":
           this.clockwiseMovement(downFaceArray, this.rotateArrayDouble(leftFaceArray), this.rotateArrayDouble(backFaceArray),
@@ -203,20 +217,20 @@ export class HomeComponent implements AfterViewInit {
           this.antiClockwiseMovement(upFaceArray, leftFaceArray, frontFaceArray, rightFaceArray, backFaceArray);
           break;
         case "L'":
-          this.antiClockwiseMovement(leftFaceArray, this.rotateArrayClockwise(backFaceArray), this.rotateArrayAnticlockwise(downFaceArray),
-            this.rotateArrayAnticlockwise(frontFaceArray), this.rotateArrayAnticlockwise(upFaceArray));
+          this.antiClockwiseMovement(leftFaceArray, this.rotateArrayAnticlockwise(backFaceArray), this.rotateArrayClockwise(downFaceArray),
+          this.rotateArrayClockwise(frontFaceArray), this.rotateArrayClockwise(upFaceArray));
           break;
         case "F'":
-          this.antiClockwiseMovement(frontFaceArray, this.rotateArrayClockwise(leftFaceArray), downFaceArray,
-            this.rotateArrayAnticlockwise(rightFaceArray), this.rotateArrayDouble(upFaceArray));
+          this.antiClockwiseMovement(frontFaceArray, this.rotateArrayAnticlockwise(leftFaceArray), downFaceArray,
+          this.rotateArrayClockwise(rightFaceArray), this.rotateArrayDouble(upFaceArray));
           break;
         case "R'":
-          this.antiClockwiseMovement(rightFaceArray, this.rotateArrayClockwise(frontFaceArray), this.rotateArrayClockwise(downFaceArray),
-            this.rotateArrayAnticlockwise(backFaceArray), this.rotateArrayClockwise(upFaceArray));
+          this.antiClockwiseMovement(rightFaceArray, this.rotateArrayAnticlockwise(frontFaceArray), this.rotateArrayAnticlockwise(downFaceArray),
+          this.rotateArrayClockwise(backFaceArray), this.rotateArrayAnticlockwise(upFaceArray));
           break;
         case "B'":
-          this.antiClockwiseMovement(backFaceArray, this.rotateArrayClockwise(rightFaceArray), this.rotateArrayDouble(downFaceArray),
-            this.rotateArrayAnticlockwise(leftFaceArray), upFaceArray);
+          this.antiClockwiseMovement(backFaceArray, this.rotateArrayAnticlockwise(rightFaceArray), this.rotateArrayDouble(downFaceArray),
+          this.rotateArrayClockwise(leftFaceArray), upFaceArray);
           break;
         case "D'":
           this.antiClockwiseMovement(downFaceArray, this.rotateArrayDouble(leftFaceArray), this.rotateArrayDouble(backFaceArray),
@@ -226,20 +240,20 @@ export class HomeComponent implements AfterViewInit {
           this.doubleMovement(upFaceArray, leftFaceArray, frontFaceArray, rightFaceArray, backFaceArray);
           break;
         case "L2":
-          this.doubleMovement(leftFaceArray, this.rotateArrayClockwise(backFaceArray), this.rotateArrayAnticlockwise(downFaceArray),
-            this.rotateArrayAnticlockwise(frontFaceArray), this.rotateArrayAnticlockwise(upFaceArray));
+          this.doubleMovement(leftFaceArray, this.rotateArrayAnticlockwise(backFaceArray), this.rotateArrayClockwise(downFaceArray),
+          this.rotateArrayClockwise(frontFaceArray), this.rotateArrayClockwise(upFaceArray));
           break;
         case "F2":
-          this.doubleMovement(frontFaceArray, this.rotateArrayClockwise(leftFaceArray), downFaceArray,
-            this.rotateArrayAnticlockwise(rightFaceArray), this.rotateArrayDouble(upFaceArray));
+          this.doubleMovement(frontFaceArray, this.rotateArrayAnticlockwise(leftFaceArray), downFaceArray,
+          this.rotateArrayClockwise(rightFaceArray), this.rotateArrayDouble(upFaceArray));
           break;
         case "R2":
-          this.doubleMovement(rightFaceArray, this.rotateArrayClockwise(frontFaceArray), this.rotateArrayClockwise(downFaceArray),
-            this.rotateArrayAnticlockwise(backFaceArray), this.rotateArrayClockwise(upFaceArray));
+          this.doubleMovement(rightFaceArray, this.rotateArrayAnticlockwise(frontFaceArray), this.rotateArrayAnticlockwise(downFaceArray),
+          this.rotateArrayClockwise(backFaceArray), this.rotateArrayAnticlockwise(upFaceArray));
           break;
         case "B2":
-          this.doubleMovement(backFaceArray, this.rotateArrayClockwise(rightFaceArray), this.rotateArrayDouble(downFaceArray),
-            this.rotateArrayAnticlockwise(leftFaceArray), upFaceArray);
+          this.doubleMovement(backFaceArray, this.rotateArrayAnticlockwise(rightFaceArray), this.rotateArrayDouble(downFaceArray),
+          this.rotateArrayClockwise(leftFaceArray), upFaceArray);
           break;
         case "D2":
           this.doubleMovement(downFaceArray, this.rotateArrayDouble(leftFaceArray), this.rotateArrayDouble(backFaceArray),
@@ -250,56 +264,51 @@ export class HomeComponent implements AfterViewInit {
   }
 
   rotateArrayClockwise(face: any) {
-    const cornerUL = face[0];
-    const edgeU = face[1];
+    const newFace = []
 
-    face[0] = face[6];
-    face[6] = face[8];
-    face[8] = face[2];
-    face[2] = cornerUL;
+    newFace[0] = face[6];
+    newFace[6] = face[8];
+    newFace[8] = face[2];
+    newFace[2] = face[0];
 
-    face[1] = face[3];
-    face[3] = face[7];
-    face[7] = face[5];
-    face[5] = edgeU;
+    newFace[1] = face[3];
+    newFace[3] = face[7];
+    newFace[7] = face[5];
+    newFace[5] = face[1];
 
-    return face;
+    return newFace;
   }
 
   rotateArrayAnticlockwise(face: any) {
-    const cornerUL = face[0];
-    const edgeU = face[1];
+    const newFace = []
 
-    face[0] = face[3];
-    face[3] = face[8];
-    face[8] = face[6];
-    face[6] = cornerUL;
+    newFace[0] = face[2];
+    newFace[2] = face[8];
+    newFace[8] = face[6];
+    newFace[6] = face[0];
 
-    face[1] = face[5];
-    face[5] = face[7];
-    face[7] = face[3];
-    face[3] = edgeU;
+    newFace[1] = face[5];
+    newFace[5] = face[7];
+    newFace[7] = face[3];
+    newFace[3] = face[1];
 
-    return face;
+    return newFace;
   }
 
   rotateArrayDouble(face: any) {
-    const cornerUL = face[0];
-    const cornerUR = face[2];
-    const edgeU = face[1];
-    const edgeL = face[3];
+    const newFace = []
 
-    face[0] = face[8];
-    face[8] = cornerUL;
-    face[2] = face[6];
-    face[6] = cornerUR;
+    newFace[0] = face[8];
+    newFace[8] = face[0];
+    newFace[2] = face[6];
+    newFace[6] = face[2];
 
-    face[1] = face[7];
-    face[7] = edgeU;
-    face[3] = face[5];
-    face[5] = edgeL;
+    newFace[1] = face[7];
+    newFace[7] = face[1];
+    newFace[3] = face[5];
+    newFace[5] = face[3];
 
-    return face;
+    return newFace;
   }
 
   clockwiseMovement(upFace: any, leftFace: any, frontFace: any, rightFace: any, backFace: any) {

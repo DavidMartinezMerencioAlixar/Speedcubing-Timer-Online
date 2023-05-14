@@ -4,6 +4,14 @@
     width: 315px;
     height: 250px;
     position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+#notAvailable {
+    font-family: 'Alkatra', sans-serif;
+    font-size: 20px;
+    align-self: center;
 }
 
 .face {
