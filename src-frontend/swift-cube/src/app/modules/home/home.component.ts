@@ -163,26 +163,38 @@ export class HomeComponent implements AfterViewInit {
 
     const possibleMovs = movementTypes.split(" ");
     const numPossibleMovs = possibleMovs.length;
-    let scramble = "", actualMov, lastMov = "", lastMovLetter, letter1, letter2;
+    let scramble = "", actualMov, lastMov = "", secondToLastMov = "", actualMovLetter, lastMoveLetter, secondToLastMovLetter, letter;
     let validMove = false;
     for (let i = 0; i < totalMovs; i++) {
       /* Generates a new letter until it doesn't match the last one generated */
       do {
         actualMov = possibleMovs[Math.floor(Math.random() * (numPossibleMovs - 1))];
-        lastMovLetter = lastMov.charAt(0);
-        switch (actualMov.charAt(0)) {
-          case "F": case "B":
-            letter1 = "F", letter2 = "B";
+        actualMovLetter = actualMov.charAt(0);
+        lastMoveLetter = lastMov.charAt(0);
+        secondToLastMovLetter = secondToLastMov.charAt(0);
+        switch (secondToLastMovLetter) {
+          case "F":
+            letter = "B";
             break;
-          case "U": case "D":
-            letter1 = "U", letter2 = "D";
+          case "B":
+            letter = "F";
             break;
-          case "L": case "R":
-            letter1 = "L", letter2 = "R";
+          case "U":
+            letter = "D";
+            break;
+          case "D":
+            letter = "U";
+            break;
+          case "L":
+            letter = "R";
+            break;
+          case "R":
+            letter = "L";
             break;
         }
-        validMove = lastMovLetter !== letter1 && lastMovLetter !== letter2;
+        validMove = actualMovLetter !== lastMoveLetter && actualMovLetter !== letter;
       } while (!validMove);
+      secondToLastMov = lastMov;
       lastMov = actualMov;
 
       /* Adds the movement to the final scramble */
