@@ -87,8 +87,10 @@ router.put("/", function (req, res, next) {
         if (res2) {
           bcrypt.hash(req.body.newPassword, SALT_WORK_FACTOR, function (err3, hash) {
             if (err3) return next(err3);
+            const updateData = req.body.newPassword === "" ? { username: req.query.newUsername } : { username: req.query.newUsername, password: hash };
+
             User.updateOne({ username: req.query.oldUsername },
-              { username: req.query.newUsername, password: hash }, function (err3, res3) {
+              updateData, function (err3, res3) {
                 if (err3) return next(err3);
                 bcrypt.hash(user.username, SALT_WORK_FACTOR, function (err4, hash) {
                   if (err4) return next(err4);
@@ -108,7 +110,7 @@ router.put("/", function (req, res, next) {
 
 /* DELETE an user */
 router.delete("/:username", function (req, res, next) {
-  User.findOneAndDelete({ username: req.params.username }, function (err, user) {
+  User.findOneAndRemove({ username: req.params.username }, function (err, user) {
     if (err) res.status(500).send(err);
     else res.sendStatus(200);
   });

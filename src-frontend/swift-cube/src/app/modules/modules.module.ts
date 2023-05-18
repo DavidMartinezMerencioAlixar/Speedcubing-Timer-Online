@@ -8,6 +8,7 @@ import { InputComponent } from './commons/input/input.component';
 import { LoginComponent } from './login/login.component';
 import { EditUserComponent } from './edit-user/edit-user.component';
 import { VisualScrambleComponent } from './visual-scramble/visual-scramble.component';
+import { ScrambleLocalComponent } from './scramble-local/scramble-local.component';
 
 
 
@@ -20,6 +21,7 @@ import { VisualScrambleComponent } from './visual-scramble/visual-scramble.compo
     LoginComponent,
     EditUserComponent,
     VisualScrambleComponent,
+    ScrambleLocalComponent,
   ],
   imports: [
     CommonModule,

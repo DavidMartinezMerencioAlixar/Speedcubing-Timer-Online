@@ -16,7 +16,7 @@ export class SkeletonComponent implements AfterViewInit {
     this.generateComponent(navigation);
   }
 
-  generateComponent(idx: number):void {
+  generateComponent(idx: number): void {
     const viewContainerRef = this.dynamic.ViewContainerRef;
     viewContainerRef.clear();
     const componentRef = viewContainerRef.createComponent<any>(this.NAVIGATIONS[idx].component);

@@ -33,6 +33,12 @@ export class HomeComponent implements AfterViewInit {
       this.getCubeData(selectedCube);
     });
 
+    const closeControlsInfo = document.getElementById('closeControlsInfo');
+    const controlsInfo = document.getElementById('controlsInfo');
+    closeControlsInfo?.addEventListener("click", () => {
+      controlsInfo!.style.display = 'none';
+    });
+
     const cubeNameSpan = <HTMLSelectElement>document.getElementById("cubeNameSpan");
     cubeNameSpan?.addEventListener("click", () => { this.generateScramble(); });
 
@@ -42,13 +48,36 @@ export class HomeComponent implements AfterViewInit {
 
   constructor() {
     window.addEventListener('keydown', (event: KeyboardEvent) => {
-      if (event.key == ' ') {
+      if (event.key === ' ') {
         event.preventDefault();
       }
       const time = document.getElementById("time");
       if (this.runningTimer) {
         this.stopTimer();
       } else if (!this.keyPressed && event.key === ' ') {
+        if (time != null) time.style.color = 'red';
+        this.keyPressed = true;
+        this.startTime = Date.now();
+        this.intervalId = setInterval(() => {
+          this.elapsedTime = Date.now() - this.startTime;
+          this.readyToStart = this.elapsedTime >= 500;
+          if (this.readyToStart) {
+            if (time != null) {
+              time.style.color = 'green';
+              time.textContent = '0.00';
+            }
+          }
+        }, 10);
+      }
+    });
+
+    window.addEventListener('mousedown', (event: MouseEvent) => {
+      const targetId = (event.target as HTMLElement).id;
+      const time = document.getElementById("time");
+
+      if (this.runningTimer) {
+        this.stopTimer();
+      } else if (!this.keyPressed && event.button === 0 && (targetId === "mainDiv" || targetId === "time")) {
         if (time != null) time.style.color = 'red';
         this.keyPressed = true;
         this.startTime = Date.now();
@@ -78,6 +107,22 @@ export class HomeComponent implements AfterViewInit {
         }
       }
     });
+
+    window.addEventListener('mouseup', (event: MouseEvent) => {
+      const targetId = (event.target as HTMLElement).id;
+      const time = document.getElementById("time");
+
+      if (event.button === 0 && (targetId === "mainDiv" || targetId === "time")) {
+        this.keyPressed = false;
+        clearInterval(this.intervalId);
+        this.elapsedTime = Date.now() - this.startTime;
+        if (time != null) time.style.color = '';
+        if (this.readyToStart) {
+          this.readyToStart = false;
+          this.startTimer();
+        }
+      }
+    });
   }
 
   startTimer() {
@@ -97,11 +142,11 @@ export class HomeComponent implements AfterViewInit {
     if (time != null) {
 
       if (minutes <= 0) {
-        time.textContent = seconds + "." + milliseconds;
+        time.textContent = seconds + "." + milliseconds + " s";
 
       } else {
         seconds = seconds < 10 ? "0" + seconds : seconds;
-        time.textContent = minutes + ":" + seconds + "." + milliseconds;
+        time.textContent = minutes + ":" + seconds + "." + milliseconds + " m";
       }
     }
   }

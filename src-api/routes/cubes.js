@@ -51,7 +51,7 @@ router.put("/:name", function (req, res, next) {
 
 /* DELETE a cube */
 router.delete("/:name", function (req, res, next) {
-  Cube.findOneAndDelete(req.params.name, function (err, cube) {
+  Cube.findOneAndRemove({ name: req.params.name }, function (err, cube) {
     if (err) res.status(500).send(err);
     else res.sendStatus(200);
   });
