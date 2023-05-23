@@ -163,7 +163,7 @@ export class HomeComponent implements AfterViewInit {
 
     const possibleMovs = movementTypes.split(" ");
     const numPossibleMovs = possibleMovs.length;
-    let scramble = "", actualMov, lastMov = "", secondToLastMov = "", actualMovLetter, lastMoveLetter, secondToLastMovLetter, letter;
+    let scramble = "", actualMov, lastMov = "", secondToLastMov = "", actualMovLetter, lastMoveLetter, secondToLastMovLetter, opsositeSecondToLastMovletter;
     let validMove = false;
     for (let i = 0; i < totalMovs; i++) {
       /* Generates a new letter until it doesn't match the last one generated */
@@ -172,27 +172,15 @@ export class HomeComponent implements AfterViewInit {
         actualMovLetter = actualMov.charAt(0);
         lastMoveLetter = lastMov.charAt(0);
         secondToLastMovLetter = secondToLastMov.charAt(0);
-        switch (secondToLastMovLetter) {
-          case "F":
-            letter = "B";
-            break;
-          case "B":
-            letter = "F";
-            break;
-          case "U":
-            letter = "D";
-            break;
-          case "D":
-            letter = "U";
-            break;
-          case "L":
-            letter = "R";
-            break;
-          case "R":
-            letter = "L";
-            break;
-        }
-        validMove = actualMovLetter !== lastMoveLetter && actualMovLetter !== letter;
+        opsositeSecondToLastMovletter = this.getOpositeLetter(secondToLastMovLetter);
+
+        /* El movimiento actual es válido cuando:
+         * - La letra actual y la última son distintas
+         * - Si la penúltima y la antepenúltima letra no son opuestas
+         * - Si la penúltima y antepenúltima letra son opuestas y la letra actual y la antepenúltima son distintas
+         */
+        console.log("a")
+        validMove = actualMovLetter !== lastMoveLetter && (lastMoveLetter === opsositeSecondToLastMovletter ? actualMovLetter !== secondToLastMovLetter : true);
       } while (!validMove);
       secondToLastMov = lastMov;
       lastMov = actualMov;
@@ -547,6 +535,31 @@ export class HomeComponent implements AfterViewInit {
     cornerRightUR.className = cornerLeftURClassName;
     cornerFrontUR.className = cornerBackUR.className;
     cornerBackUR.className = cornerFrontURClassName;
+  }
+
+  getOpositeLetter(letter: string) {
+    let opsiteLetter = "";
+    switch (letter) {
+      case "F":
+        opsiteLetter = "B";
+        break;
+      case "B":
+        opsiteLetter = "F";
+        break;
+      case "U":
+        opsiteLetter = "D";
+        break;
+      case "D":
+        opsiteLetter = "U";
+        break;
+      case "L":
+        opsiteLetter = "R";
+        break;
+      case "R":
+        opsiteLetter = "L";
+        break;
+    }
+    return opsiteLetter;
   }
 
   async getCubeData(cubeName: String) {

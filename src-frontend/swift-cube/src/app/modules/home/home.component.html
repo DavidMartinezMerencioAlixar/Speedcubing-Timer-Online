@@ -1,16 +1,43 @@
 <app-scramble-local></app-scramble-local>
 
-<diV id="mainDiv">
-    <div id="controlsInfo">
-        <button type="button" id="closeControlsInfo">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        <h5>Controls</h5>
-        <p>Space or left click for 0.5 seconds to start the timer</p>
-        <p>Press any key or left click to stop the timer</p>
+<div id="mainDiv">
+  <app-times-table></app-times-table>
+  <div id="controlsInfo">
+    <button type="button" id="closeControlsInfo">
+      <span aria-hidden="true">&times;</span>
+    </button>
+    <h5>Controls</h5>
+    <p>Space or left click (in the yellow zone) for 0.5 seconds to start the timer</p>
+    <p>Press any key or left click to stop the timer</p>
+  </div>
+  <div id="timerDiv">
+    <h3 id="time">0.00</h3>
+  </div>
+  <app-visual-scramble></app-visual-scramble>
+</div>
+
+<div class="modal fade" id="showScramblePopup" tabindex="-1" aria-labelledby="showScramblePopupLabel"
+  aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title">Time data</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-    <div id="timerDiv">
-        <h3 id="time">0.00</h3>
+      <div class="modal-body">
+        <table id="showScrambleTable">
+          <tr>
+            <th>round</th>
+            <th>time</th>
+            <th>scramble</th>
+          </tr>
+          <tr>
+            <td>1</td>
+            <td>12.64</td>
+            <td class="scrambleInTable">B R' L2 D F2 R' F' B' F R U R F2 D2 L R2 U D' L2 R</td>
+          </tr>
+        </table>
+      </div>
     </div>
-    <app-visual-scramble></app-visual-scramble>
-</diV>
+  </div>
+</div>
