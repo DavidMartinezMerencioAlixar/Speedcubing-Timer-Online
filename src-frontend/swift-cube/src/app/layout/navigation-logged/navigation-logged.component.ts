@@ -15,7 +15,8 @@ export class NavigationLoggedComponent implements AfterViewInit {
     localStorage.setItem("loggedUser", "n");
     localStorage.removeItem("user.data");
     localStorage.removeItem("user.name");
-    window.location.href = "";
+    localStorage.removeItem("room");
+    this.toHome();
   }
 
   toEditUser() {

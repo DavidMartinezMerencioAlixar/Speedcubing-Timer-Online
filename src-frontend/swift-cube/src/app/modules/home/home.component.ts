@@ -151,10 +151,37 @@ export class HomeComponent implements AfterViewInit {
     }
   }
 
-  stopTimer() {
+  async stopTimer() {
     clearInterval(this.timerInterval);
     this.runningTimer = false;
+    await this.saveSolve();
     this.generateScramble();
+  }
+
+  async saveSolve() {
+    const time = (document.getElementById("time") as HTMLElement).textContent;
+    const scramble = (document.getElementById("scramble") as HTMLElement).textContent;
+    const video = ""
+    const username = localStorage.getItem("user.name");
+    const room = localStorage.getItem("room");
+
+    const URL = "http://localhost:5000/parties";
+    
+    const response = await fetch(URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ time: time, scramble: scramble, video: video, username: username, room:  room})
+    }).then(response => {
+      if (response.ok) {
+        response.json().then(party => {
+          console.log(party);
+        });
+      }
+    }).catch(error => {
+      console.error("Error saving the time:", error);
+    });
   }
 
   generateScramble() {
@@ -179,7 +206,6 @@ export class HomeComponent implements AfterViewInit {
          * - Si la penúltima y la antepenúltima letra no son opuestas
          * - Si la penúltima y antepenúltima letra son opuestas y la letra actual y la antepenúltima son distintas
          */
-        console.log("a")
         validMove = actualMovLetter !== lastMoveLetter && (lastMoveLetter === opsositeSecondToLastMovletter ? actualMovLetter !== secondToLastMovLetter : true);
       } while (!validMove);
       secondToLastMov = lastMov;

@@ -35,13 +35,14 @@ export class LoginComponent implements AfterViewInit {
         response.json().then(user => {
           localStorage.setItem("user.data", user.username);
           localStorage.setItem("user.name", this.user.username);
+          localStorage.setItem("room", `${this.user.username}-local`);
         });
         window.location.href = "";
       } else {
         location.reload();
       }
     }).catch(error => {
-      console.error("Error creating an user:", error);
+      console.error("Error loging in an user:", error);
     });
   }
 }

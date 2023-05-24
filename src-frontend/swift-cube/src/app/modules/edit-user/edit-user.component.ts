@@ -26,7 +26,7 @@ export class EditUserComponent implements AfterViewInit {
     });
     const encryptedPassword = CryptoJS.AES.encrypt(this.user.password, "/nm8z3}KkeXVpsL").toString();
     const encryptedConfirmPassword = CryptoJS.AES.encrypt(this.user.confirmPassword, "/nm8z3}KkeXVpsL").toString();
-    console.log(URL);
+
     const response = await fetch(URL , {
       method: "PUT",
       headers: {
@@ -38,13 +38,28 @@ export class EditUserComponent implements AfterViewInit {
         response.json().then(user => {
           localStorage.setItem("user.data", user.username);
           localStorage.setItem("user.name", this.user.username);
+          const oldRoomCode = localStorage.getItem("room");
+
+          if (oldRoomCode !== null) {
+            const URL = "http://localhost:5000/rooms?" + new URLSearchParams({
+              oldRoomCode: oldRoomCode
+            });
+
+            const response = fetch(URL , {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({ room_code: `${this.user.username}-local` })
+            }).then(response => { localStorage.setItem("room", `${this.user.username}-local`); });
+          }
         });
-        window.location.href = "";
+        // window.location.href = "";
       } else {
         window.location.reload();
       }
     }).catch(error => {
-      console.error("Error creating an user:", error);
+      console.error("Error updating an user:", error);
     });
   }
 }

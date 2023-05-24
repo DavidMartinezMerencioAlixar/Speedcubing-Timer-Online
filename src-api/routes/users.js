@@ -2,6 +2,8 @@ var express = require('express');
 var router = express.Router();
 var { body, validationResult } = require('express-validator');
 var User = require("../models/User");
+var Room = require("../models/Room");
+var Cube = require("../models/Cube");
 var bcrypt = require('bcryptjs')
 const SALT_WORK_FACTOR = 10;
 
@@ -13,7 +15,7 @@ router.get('/', function (req, res, next) {
   });
 });
 
-// GET an user by his username
+/* GET an user by his username */
 router.get("/:username", function (req, res, next) {
   User.findOne({ username: req.params.username }).exec(function (err, user) {
     if (err) res.status(500).send(err);
@@ -34,15 +36,31 @@ router.post('/', [
     username: req.body.username,
     password: req.body.password
   }).then(user => {
-    bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
-      if (err) return next(err);
-      bcrypt.hash(user.username, salt, function (err, hash) {
-        if (err) return next(err);
-        const encryptedUsername = hash;
-        res.status(200).json({ username: encryptedUsername });
-      });
+    const URL = "http://localhost:5000/cubes/3x3x3";
+
+    const response = fetch(URL
+    ).then(response => {
+      if (response.status === 200) {
+        response.json().then(cube => {
+          Room.create({
+            cube_name: cube._id.toString(),
+            room_code: `${user.username}-local`,
+            competitors_number: 1
+          }).then(room => {
+            console.log(user.username);
+            bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+              if (err) return next(err);
+              bcrypt.hash(user.username, salt, function (err, hash) {
+                if (err) return next(err);
+                const encryptedUsername = hash;
+                res.status(200).json({ username: encryptedUsername });
+              });
+            });
+          });
+        });
+      }
     });
-  }).catch(error => res.status(204).send());
+  }).catch(error => res.status(500).send(error));
 });
 
 /* Check if an user exists and if the password is correct */

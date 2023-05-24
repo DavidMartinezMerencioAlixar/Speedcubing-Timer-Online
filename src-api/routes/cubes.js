@@ -13,9 +13,9 @@ router.get('/', function (req, res, next) {
 
 // GET a cube by its name
 router.get("/:name", function (req, res, next) {
-  Cube.findOne({ name: req.params.name }).exec(function (err, cubes) {
+  Cube.findOne({ name: req.params.name }).exec(function (err, cube) {
     if (err) res.status(500).send(err);
-    else res.status(200).json(cubes);
+    else res.status(200).json(cube);
   });
 });
 
@@ -44,7 +44,7 @@ router.put("/:name", function (req, res, next) {
     req.body,
     function (err, cube) {
       if (err) res.status(500).send(err);
-      else res.sendStatus(200);
+      else res.sendStatus(200).send(cube);
     }
   );
 });

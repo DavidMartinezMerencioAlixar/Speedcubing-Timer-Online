@@ -40,6 +40,7 @@ export class RegistrationComponent implements AfterViewInit {
           response.json().then(user => {
             localStorage.setItem("user.data", user.username);
             localStorage.setItem("user.name", this.user.username);
+            localStorage.setItem("room", `${this.user.username}-local`);
           });
           window.location.href = "";
         } else {
