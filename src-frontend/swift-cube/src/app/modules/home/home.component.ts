@@ -43,6 +43,7 @@ export class HomeComponent implements AfterViewInit {
     cubeNameSpan?.addEventListener("click", () => { this.generateScramble(); });
 
     this.getAllCubes();
+    this.showSolvesList();
     setTimeout(() => { this.getCubeData(cubeNames.options[cubeNames.selectedIndex].value); }, 200);
   }
 
@@ -151,23 +152,23 @@ export class HomeComponent implements AfterViewInit {
     }
   }
 
-  async stopTimer() {
+  stopTimer() {
     clearInterval(this.timerInterval);
     this.runningTimer = false;
-    await this.saveSolve();
+    const scramble = (document.getElementById("scramble") as HTMLElement).textContent;
     this.generateScramble();
+    this.saveSolve(scramble);
   }
 
-  async saveSolve() {
+  saveSolve(scramble: any) {
     const time = (document.getElementById("time") as HTMLElement).textContent;
-    const scramble = (document.getElementById("scramble") as HTMLElement).textContent;
     const video = ""
     const username = localStorage.getItem("user.name");
     const room = localStorage.getItem("room");
 
     const URL = "http://localhost:5000/parties";
     
-    const response = await fetch(URL, {
+    const response = fetch(URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -175,13 +176,67 @@ export class HomeComponent implements AfterViewInit {
       body: JSON.stringify({ time: time, scramble: scramble, video: video, username: username, room:  room})
     }).then(response => {
       if (response.ok) {
-        response.json().then(party => {
-          console.log(party);
+        response.json().then(lastSolve => {
+          this.appendSolveToList(lastSolve.lastSolve, lastSolve.solvesAmount);
+          return lastSolve;
         });
       }
     }).catch(error => {
       console.error("Error saving the time:", error);
     });
+  }
+
+  showSolvesList() {
+    const timesTable = document.getElementById("currentTimeTable") as HTMLTableElement;
+    const timesTableHeader = timesTable.children[0];
+    timesTable.innerHTML = "";
+    timesTable.appendChild(timesTableHeader);
+
+    const URL = "http://localhost:5000/parties/actual?" + new URLSearchParams({
+      username: localStorage.getItem("user.name")!,
+      room_code: localStorage.getItem("room")!
+    });
+
+    const response = fetch(URL
+    ).then(response => {
+      if (response.status === 200) {
+        response.json().then(party => {
+          const solvesList = party.solve_ids;
+          for (let i = 0; i < solvesList.length; i++) {
+            const solvesAmount = i + 1;
+            this.appendSolveToList(solvesList[i], solvesAmount);
+          }
+        });
+      }
+    }).catch(error => console.log(error));
+  }
+
+  appendSolveToList(lastSolve: any, nextSolveid: any) {
+    // const nextSolveId = solvesAmount;
+
+    const timesTable = document.getElementById("currentTimeTable") as HTMLTableElement;
+    
+    const tr = timesTable.insertRow(1);
+
+    const tdRound = document.createElement("td");
+    const tdTime = document.createElement("td");
+    const tdScramble = document.createElement("td");
+    tr.appendChild(tdRound);
+    tr.appendChild(tdTime);
+    tr.appendChild(tdScramble);
+
+    tdRound.appendChild(document.createTextNode(nextSolveid));
+    tdTime.appendChild(document.createTextNode(lastSolve.time));
+
+    const buttonScramble = document.createElement("button");
+    buttonScramble.appendChild(document.createTextNode("view"));
+    buttonScramble.className = "viewScrambleButton";
+    buttonScramble.setAttribute("scramble", lastSolve.scramble);
+    buttonScramble.setAttribute("scramble", lastSolve.scramble);
+    buttonScramble.setAttribute("data-bs-toggle", "modal");
+    buttonScramble.setAttribute("data-bs-target", "#showScramblePopup");
+
+    tdScramble.appendChild(buttonScramble);
   }
 
   generateScramble() {

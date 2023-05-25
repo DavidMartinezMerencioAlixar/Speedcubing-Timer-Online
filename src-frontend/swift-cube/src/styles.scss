@@ -69,3 +69,14 @@ body {
 .showValidation.ng-dirty.ng-invalid:not(form) {
     border-left: 5px solid #A94442;
 }
+
+.viewScrambleButton {
+    font-size: 10px;
+    color: white;
+    background-color: #000074;
+    border-radius: 5px;
+    height: 20px;
+    padding-left: 6px;
+    padding-right: 6px;
+    border: none;
+}

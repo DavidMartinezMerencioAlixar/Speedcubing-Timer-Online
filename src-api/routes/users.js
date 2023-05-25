@@ -47,7 +47,6 @@ router.post('/', [
             room_code: `${user.username}-local`,
             competitors_number: 1
           }).then(room => {
-            console.log(user.username);
             bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
               if (err) return next(err);
               bcrypt.hash(user.username, salt, function (err, hash) {

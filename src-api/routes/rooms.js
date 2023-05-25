@@ -22,7 +22,6 @@ router.put("/", function (req, res, next) {
     { room_code: req.query.oldRoomCode },
     req.body,
     function(err, room) {
-      console.log({ room_code: req.query.oldRoomCode }, req.body);
       if (err) return res.status(500).send(err);
       else return res.status(200).send();
     });
