@@ -20,5 +20,13 @@
 .type {
     font-weight: bold;
     text-align: right;
-    width: 115px;
+    width: 80px;
+}
+
+#loginWarning {
+    font-family: 'Alkatra', sans-serif;
+    font-size: 18px;
+    text-align: center;
+    margin-top: 50px;
+    color: rgb(180, 0, 0);
 }

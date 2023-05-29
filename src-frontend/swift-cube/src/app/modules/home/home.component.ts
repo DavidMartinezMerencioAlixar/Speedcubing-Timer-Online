@@ -33,10 +33,21 @@ export class HomeComponent implements AfterViewInit {
       this.getCubeData(selectedCube);
     });
 
-    const closeControlsInfo = document.getElementById('closeControlsInfo');
-    const controlsInfo = document.getElementById('controlsInfo');
-    closeControlsInfo?.addEventListener("click", () => {
-      controlsInfo!.style.display = 'none';
+
+    
+    
+    const closeControlsInfo = document.getElementById('closeControlsInfo') as HTMLButtonElement;
+    const dontShowInfoAgain = document.getElementById('dontShowInfoAgain') as HTMLAnchorElement;
+    const controlsInfo = document.getElementById('controlsInfo') as HTMLDialogElement;
+    if (localStorage.getItem("noInfo") === "y") controlsInfo.classList.add("noDisplay");
+
+    closeControlsInfo.addEventListener("click", () => {
+      controlsInfo.classList.add("noDisplay");
+    });
+
+    dontShowInfoAgain.addEventListener("click", () => {
+      controlsInfo.classList.add("noDisplay");
+      localStorage.setItem("noInfo", "y");
     });
 
     const cubeNameSpan = <HTMLSelectElement>document.getElementById("cubeNameSpan");
@@ -167,7 +178,7 @@ export class HomeComponent implements AfterViewInit {
     const room = localStorage.getItem("room");
 
     const URL = "http://localhost:5000/parties";
-    
+
     const response = fetch(URL, {
       method: "POST",
       headers: {
@@ -178,6 +189,7 @@ export class HomeComponent implements AfterViewInit {
       if (response.ok) {
         response.json().then(lastSolve => {
           this.appendSolveToList(lastSolve.lastSolve, lastSolve.solvesAmount);
+          this.calculateAvgs(lastSolve.avgs);
           return lastSolve;
         });
       }
@@ -201,19 +213,33 @@ export class HomeComponent implements AfterViewInit {
     ).then(response => {
       if (response.status === 200) {
         response.json().then(party => {
-          const solvesList = party.solve_ids;
+          const solvesList = party.party.solve_ids;
           for (let i = 0; i < solvesList.length; i++) {
             const solvesAmount = i + 1;
             this.appendSolveToList(solvesList[i], solvesAmount);
           }
+          this.calculateAvgs(party.avgs);
         });
       }
     }).catch(error => console.log(error));
   }
 
-  appendSolveToList(lastSolve: any, nextSolveid: any) {
-    // const nextSolveId = solvesAmount;
+  calculateAvgs(avgs: Array<string>) {
+    const avgsAmount = [3, 5, 12, 25, 50, 100, 200, 500, 1000, 2000, 10000];
+    const solvesTds = document.getElementsByClassName("current");
 
+    (document.getElementsByClassName("current")[0] as HTMLTableRowElement).textContent = (document.getElementById("time") as HTMLElement).textContent;
+
+    for (let i = 0; i < avgsAmount.length; i++) {
+      if (avgs[i] === undefined) break
+      else {
+        (solvesTds[i + 1].parentNode as HTMLTableRowElement).classList.remove("noDisplay");
+        solvesTds[i + 1].textContent = avgs[i];
+      }
+    }
+  }
+
+  appendSolveToList(lastSolve: any, nextSolveid: any) {
     const timesTable = document.getElementById("currentTimeTable") as HTMLTableElement;
     
     const tr = timesTable.insertRow(1);
@@ -256,10 +282,10 @@ export class HomeComponent implements AfterViewInit {
         secondToLastMovLetter = secondToLastMov.charAt(0);
         opsositeSecondToLastMovletter = this.getOpositeLetter(secondToLastMovLetter);
 
-        /* El movimiento actual es válido cuando:
-         * - La letra actual y la última son distintas
-         * - Si la penúltima y la antepenúltima letra no son opuestas
-         * - Si la penúltima y antepenúltima letra son opuestas y la letra actual y la antepenúltima son distintas
+        /* Actual movement is valid when:
+         * - Actual and last letters are different
+         * - Second to last and third to last letters are not oposite
+         * - Second to last and third to last letters are oposite and actual and third to last letters are differents
          */
         validMove = actualMovLetter !== lastMoveLetter && (lastMoveLetter === opsositeSecondToLastMovletter ? actualMovLetter !== secondToLastMovLetter : true);
       } while (!validMove);
