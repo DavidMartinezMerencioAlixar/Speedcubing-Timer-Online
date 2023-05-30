@@ -15,7 +15,7 @@ export class HomeComponent implements AfterViewInit {
   private readyToStart: boolean = false;
   private runningTimer: boolean = false;
 
-  ngAfterViewInit(): void {
+  async ngAfterViewInit() {
     const cubeNames = <HTMLSelectElement>document.getElementById("cubeNames");
     const notAvailable = <HTMLSelectElement>document.getElementById("notAvailable");
     const visualScrambleDiv = <HTMLSelectElement>document.getElementById("visualScrambleDiv");
@@ -56,8 +56,10 @@ export class HomeComponent implements AfterViewInit {
     const cubeNameSpan = <HTMLSelectElement>document.getElementById("cubeNameSpan");
     cubeNameSpan?.addEventListener("click", () => { this.generateScramble(); });
 
-    this.getAllCubes();
-    setTimeout(() => { this.getCubeData(cubeNames.options[cubeNames.selectedIndex].value); }, 200);
+    await this.getAllCubes().then(() => {
+      console.log(cubeNames.options);
+      this.getCubeData(cubeNames.options[cubeNames.selectedIndex]?.value || "3x3x3");
+    });
   }
 
   constructor() {
