@@ -30,7 +30,8 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(cors({
-  origin: ['http://localhost:4200', 'https://davidmartinezmerencioalixar.github.io'],
+  // origin: ['http://localhost:4200', 'https://davidmartinezmerencioalixar.github.io'],
+  origin: '*',
   allowedHeaders: ['Content-Type'],
   methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
