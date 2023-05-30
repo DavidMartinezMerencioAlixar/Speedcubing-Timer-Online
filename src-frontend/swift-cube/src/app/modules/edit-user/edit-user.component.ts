@@ -20,7 +20,7 @@ export class EditUserComponent implements AfterViewInit {
   }
 
   async editUser() {
-    const URL = "http://localhost:5000/users?" + new URLSearchParams({
+    const URL = "https://swiftcube-production.up.railway.app/users?" + new URLSearchParams({
       oldUsername: localStorage.getItem("user.name") || "",
       newUsername: this.user.username
     });
@@ -41,7 +41,7 @@ export class EditUserComponent implements AfterViewInit {
           const oldRoomCode = localStorage.getItem("room");
 
           if (oldRoomCode !== null) {
-            const URL = "http://localhost:5000/rooms?" + new URLSearchParams({
+            const URL = "https://swiftcube-production.up.railway.app/rooms?" + new URLSearchParams({
               oldRoomCode: oldRoomCode
             });
 

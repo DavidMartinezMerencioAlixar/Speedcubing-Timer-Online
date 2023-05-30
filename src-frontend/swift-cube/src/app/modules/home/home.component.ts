@@ -223,7 +223,7 @@ export class HomeComponent implements AfterViewInit {
 
   deleteSolve(solvePosition: Number) {
     console.log("deleteSolve");
-    const URL = `http://localhost:5000/solves/${solvePosition}`;
+    const URL = `https://swiftcube-production.up.railway.app/solves/${solvePosition}`;
 
     const response = fetch(URL, {
       method: "DELETE"
@@ -242,7 +242,7 @@ export class HomeComponent implements AfterViewInit {
     const username = localStorage.getItem("user.name");
     const room = localStorage.getItem("room");
 
-    const URL = "http://localhost:5000/parties";
+    const URL = "https://swiftcube-production.up.railway.app/parties";
 
     const response = fetch(URL, {
       method: "POST",
@@ -269,7 +269,7 @@ export class HomeComponent implements AfterViewInit {
     timesTable.innerHTML = "";
     timesTable.appendChild(timesTableHeader);
 
-    const URL = "http://localhost:5000/parties/actual?" + new URLSearchParams({
+    const URL = "https://swiftcube-production.up.railway.app/parties/actual?" + new URLSearchParams({
       username: localStorage.getItem("user.name")!,
       room_code: localStorage.getItem("room")!,
       cube_name: cubeName!
@@ -757,7 +757,7 @@ export class HomeComponent implements AfterViewInit {
   }
 
   async getCubeData(cubeName: String) {
-    const URL = `http://localhost:5000/cubes/${cubeName}`;
+    const URL = `https://swiftcube-production.up.railway.app/cubes/${cubeName}`;
 
     const response = await fetch(URL
     ).then(response => {
@@ -776,7 +776,7 @@ export class HomeComponent implements AfterViewInit {
   }
 
   async getAllCubes() {
-    const URL = "http://localhost:5000/cubes";
+    const URL = "https://swiftcube-production.up.railway.app/cubes";
 
     const response = await fetch(URL
     ).then(response => {
