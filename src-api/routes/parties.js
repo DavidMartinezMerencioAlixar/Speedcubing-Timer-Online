@@ -6,27 +6,33 @@ var Party = require("../models/Party");
 var User = require("../models/User");
 var Room = require("../models/Room");
 var Solve = require("../models/Solve");
+var Cube = require("../models/Cube");
 
 /* GET actual party */
 router.get('/actual', function (req, res, next) {
-  Room.findOne({ room_code: req.query.room_code }).exec(function (err, room) {
+  Cube.findOne({ name: req.query.cube_name }).exec(function (err, cube) {
     if (err) return res.status(500).send(err)
-    else if (room) {
-      User.findOne({ username: req.query.username }).exec(function (err, user) {
+    else if (cube) {
+      Room.findOne({ room_code: req.query.room_code, cube_name: cube._id }).exec(function (err, room) {
         if (err) return res.status(500).send(err)
-        else if (user) {
-          Party.findOne({ "data.user_id": user._id, "data.room_id": room._id }
-          ).populate("solve_ids").exec(function (err, party) {
-            if (err) res.status(500).send(err);
-            else if (party) {
-              const avgs = getAllAverages(party.solve_ids.length, party);
-              return res.status(200).send({ party, avgs });
-            }
-            else return res.status(204).send();
+        else if (room) {
+          User.findOne({ username: req.query.username }).exec(function (err, user) {
+            if (err) return res.status(500).send(err)
+            else if (user) {
+              Party.findOne({ "data.user_id": user._id, "data.room_id": room._id }
+              ).populate("solve_ids").exec(function (err, party) {
+                if (err) res.status(500).send(err);
+                else if (party) {
+                  const avgs = getAllAverages(party.solve_ids.length, party);
+                  return res.status(200).send({ party, avgs });
+                }
+                else return res.status(204).send();
+              });
+            } else return res.status(204).send();
           });
         } else return res.status(204).send();
       });
-    } else return res.status(204).send();
+    }
   });
 });
 
@@ -36,7 +42,8 @@ router.post('/', [
   body('scramble', 'Enter a valid scramble').exists(),
   body('video', 'Enter a valid video'),
   body('username', 'Enter a valid username').exists(),
-  body('room', 'Enter a valid room').exists()
+  body('room', 'Enter a valid room').exists(),
+  body('cube_name', 'Enter a valid cube name').exists(),
 ], function (req, res) {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -54,44 +61,49 @@ router.post('/', [
         date: Date.now(),
         video: video
       }).then(solve => {
-        Room.findOne({ room_code: req.body.room }).exec(function (err, room) {
-          if (err) res.status(500).send(err);
-          else if (user !== null && room !== null) {
-            // If the party (user + room) exists, adds the solve. If not, creates a new one and with that first solve
-            Party.findOne({ "data.user_id": user._id, "data.room_id": room._id }).exec(function (err, party) {
+        Cube.findOne({ name: req.body.cube_name }).exec(function (err, cube) {
+          if (err) return res.status(500).send(err)
+          else if (cube) {
+            Room.findOne({ room_code: req.body.room, cube_name: cube._id }).exec(function (err, room) {
               if (err) res.status(500).send(err);
-              else if (party !== null) {
-                // Adds the solve to the party solves list
-                party.solve_ids.push(solve._id);
-                party.save();
-                party.populate("solve_ids", function (err, solves) {
-                  const solvesAmount = solves.solve_ids.length;
-                  const lastSolve = solves.solve_ids[solvesAmount - 1];
-                  const avgs = getAllAverages(solvesAmount, solves);
+              else if (user !== null && room !== null) {
+                // If the party (user + room) exists, adds the solve. If not, creates a new one and with that first solve
+                Party.findOne({ "data.user_id": user._id, "data.room_id": room._id }).exec(function (err, party) {
+                  if (err) res.status(500).send(err);
+                  else if (party !== null) {
+                    // Adds the solve to the party solves list
+                    party.solve_ids.push(solve._id);
+                    party.save();
+                    party.populate("solve_ids", function (err, solves) {
+                      const solvesAmount = solves.solve_ids.length;
+                      const lastSolve = solves.solve_ids[solvesAmount - 1];
+                      const avgs = getAllAverages(solvesAmount, solves);
 
-                  return res.status(200).json({ lastSolve, solvesAmount, avgs });
+                      return res.status(200).json({ lastSolve, solvesAmount, avgs });
+                    });
+                  } else {
+                    // Creates the party with that first solve
+                    Party.create({
+                      data: {
+                        user_id: user._id.toString(),
+                        room_id: room._id.toString()
+                      },
+                      solve_ids: [solve._id.toString()]
+                    }).then(party => {
+                      party.populate("solve_ids", function (err, solves) {
+                        const solvesAmount = solves.solve_ids.length;
+                        const lastSolve = solves.solve_ids[solvesAmount - 1];
+                        const avgs = getAllAverages(solvesAmount, solves);
+
+                        return res.status(200).json({ lastSolve, solvesAmount, avgs });
+                      });
+                    }).catch(error => res.status(500).send(error));
+                  }
                 });
               } else {
-                // Creates the party with that first solve
-                Party.create({
-                  data: {
-                    user_id: user._id.toString(),
-                    room_id: room._id.toString()
-                  },
-                  solve_ids: [solve._id.toString()]
-                }).then(party => {
-                  party.populate("solve_ids", function (err, solves) {
-                    const solvesAmount = solves.solve_ids.length;
-                    const lastSolve = solves.solve_ids[solvesAmount - 1];
-                    const avgs = getAllAverages(solvesAmount, solves);
-
-                    return res.status(200).json({ lastSolve, solvesAmount, avgs });
-                  });
-                }).catch(error => res.status(500).send(error));
+                return res.status(500).send("User or room are null");
               }
             });
-          } else {
-            return res.status(500).send("User or room are null");
           }
         });
       }).catch(error => {
@@ -164,7 +176,7 @@ function calculateAverage(solves, avgAmount, outAmount) {
       minutesCont++;
     } else {
       secondsSum += Number.parseFloat(solveTime.substring(0, solveTime.length - 2));
-      
+
     }
   }
 
@@ -193,9 +205,9 @@ function removeBestAndWorstTime(times, outAmount) {
       const milliseconds = times[i].substring(times[i].indexOf(".") + 1);
 
       if (bestTime === 0 ||
-          minutes < bestTimeMinutes ||
-          minutes === bestTimeMinutes && seconds < bestTimeSeconds ||
-          minutes === bestTimeMinutes && seconds === bestTimeSeconds && milliseconds < bestTimeMilliseconds) {
+        minutes < bestTimeMinutes ||
+        minutes === bestTimeMinutes && seconds < bestTimeSeconds ||
+        minutes === bestTimeMinutes && seconds === bestTimeSeconds && milliseconds < bestTimeMilliseconds) {
         bestTime = times[i];
         bestTimeMinutes = minutes;
         bestTimeSeconds = seconds;
@@ -208,19 +220,19 @@ function removeBestAndWorstTime(times, outAmount) {
           worstTimeMilliseconds = milliseconds;
         }
       } else if (minutes > worstTimeMinutes ||
-          minutes === worstTimeMinutes && seconds > worstTimeSeconds ||
-          minutes === worstTimeMinutes && seconds === worstTimeSeconds && milliseconds > worstTimeMilliseconds) {
+        minutes === worstTimeMinutes && seconds > worstTimeSeconds ||
+        minutes === worstTimeMinutes && seconds === worstTimeSeconds && milliseconds > worstTimeMilliseconds) {
         worstTime = times[i];
         worstTimeMinutes = minutes;
         worstTimeSeconds = seconds;
         worstTimeMilliseconds = milliseconds;
       }
     }
-  
+
     times.splice(times.indexOf(bestTime), 1);
     times.splice(times.indexOf(worstTime), 1);
   }
-  
+
   return times;
 }
 

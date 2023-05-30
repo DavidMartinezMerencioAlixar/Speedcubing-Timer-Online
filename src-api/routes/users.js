@@ -36,27 +36,29 @@ router.post('/', [
     username: req.body.username,
     password: req.body.password
   }).then(user => {
-    const URL = "http://localhost:5000/cubes/3x3x3";
+    Cube.find().exec(function (err, cubes) {
+      if (err) res.status(500).send(err);
+      else {
+        try {
+          cubes.forEach(cube => {
+            Room.create({
+              cube_name: cube._id.toString(),
+              room_code: `${user.username}-local-${cube.name}`,
+              competitors_number: 1
+            }).then(room => { console.log(room) });
+          });
 
-    const response = fetch(URL
-    ).then(response => {
-      if (response.status === 200) {
-        response.json().then(cube => {
-          Room.create({
-            cube_name: cube._id.toString(),
-            room_code: `${user.username}-local`,
-            competitors_number: 1
-          }).then(room => {
-            bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+          bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+            if (err) return next(err);
+            bcrypt.hash(user.username, salt, function (err, hash) {
               if (err) return next(err);
-              bcrypt.hash(user.username, salt, function (err, hash) {
-                if (err) return next(err);
-                const encryptedUsername = hash;
-                res.status(200).json({ username: encryptedUsername });
-              });
+              const encryptedUsername = hash;
+              return res.status(200).json({ username: encryptedUsername });
             });
           });
-        });
+        } catch (error) {
+          return res.status(500).send(error);
+        }
       }
     });
   }).catch(error => res.status(500).send(error));

@@ -1,4 +1,5 @@
 import { AfterViewInit, Component } from '@angular/core';
+import { ButtonComponent } from '../commons/button/button.component';
 
 @Component({
   selector: 'app-home',
@@ -15,9 +16,6 @@ export class HomeComponent implements AfterViewInit {
   private runningTimer: boolean = false;
 
   ngAfterViewInit(): void {
-    const formContainer = document.getElementById("scrambleDiv");
-    formContainer?.scrollIntoView();
-
     const cubeNames = <HTMLSelectElement>document.getElementById("cubeNames");
     const notAvailable = <HTMLSelectElement>document.getElementById("notAvailable");
     const visualScrambleDiv = <HTMLSelectElement>document.getElementById("visualScrambleDiv");
@@ -32,13 +30,12 @@ export class HomeComponent implements AfterViewInit {
       }
       this.getCubeData(selectedCube);
     });
-
-
-    
     
     const closeControlsInfo = document.getElementById('closeControlsInfo') as HTMLButtonElement;
     const dontShowInfoAgain = document.getElementById('dontShowInfoAgain') as HTMLAnchorElement;
     const controlsInfo = document.getElementById('controlsInfo') as HTMLDialogElement;
+    const deleteSolveButton = document.getElementById('deleteSolveButton') as HTMLButtonElement;
+
     if (localStorage.getItem("noInfo") === "y") controlsInfo.classList.add("noDisplay");
 
     closeControlsInfo.addEventListener("click", () => {
@@ -50,11 +47,16 @@ export class HomeComponent implements AfterViewInit {
       localStorage.setItem("noInfo", "y");
     });
 
+    deleteSolveButton.addEventListener("click", event => {
+      console.log((event.target as HTMLButtonElement).getAttribute("solve_round"));
+      const solvePosition = Number.parseInt((event.target as HTMLButtonElement).getAttribute("solve_round")!) - 1
+      this.deleteSolve(solvePosition);
+    });
+
     const cubeNameSpan = <HTMLSelectElement>document.getElementById("cubeNameSpan");
     cubeNameSpan?.addEventListener("click", () => { this.generateScramble(); });
 
     this.getAllCubes();
-    this.showSolvesList();
     setTimeout(() => { this.getCubeData(cubeNames.options[cubeNames.selectedIndex].value); }, 200);
   }
 
@@ -167,11 +169,28 @@ export class HomeComponent implements AfterViewInit {
     clearInterval(this.timerInterval);
     this.runningTimer = false;
     const scramble = (document.getElementById("scramble") as HTMLElement).textContent;
+    const cubeNames = <HTMLSelectElement>document.getElementById("cubeNames");
+    const cubeName = cubeNames.options[cubeNames.selectedIndex].value;
     this.generateScramble();
-    this.saveSolve(scramble);
+    this.saveSolve(scramble, cubeName);
   }
 
-  saveSolve(scramble: any) {
+  deleteSolve(solvePosition: Number) {
+    console.log("deleteSolve");
+    const URL = `http://localhost:5000/solves/${solvePosition}`;
+
+    const response = fetch(URL, {
+      method: "DELETE"
+    }).then(response => {
+      if (response.ok) {
+        response.json().then(deletedSolve => {
+          window.location.reload();
+        });
+      }
+    });
+  }
+
+  saveSolve(scramble: any, cubeName: any) {
     const time = (document.getElementById("time") as HTMLElement).textContent;
     const video = ""
     const username = localStorage.getItem("user.name");
@@ -184,7 +203,7 @@ export class HomeComponent implements AfterViewInit {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ time: time, scramble: scramble, video: video, username: username, room:  room})
+      body: JSON.stringify({ time: time, scramble: scramble, video: video, username: username, room:  room, cube_name: cubeName })
     }).then(response => {
       if (response.ok) {
         response.json().then(lastSolve => {
@@ -198,7 +217,7 @@ export class HomeComponent implements AfterViewInit {
     });
   }
 
-  showSolvesList() {
+  showSolvesList(cubeName: any) {
     const timesTable = document.getElementById("currentTimeTable") as HTMLTableElement;
     const timesTableHeader = timesTable.children[0];
     timesTable.innerHTML = "";
@@ -206,7 +225,8 @@ export class HomeComponent implements AfterViewInit {
 
     const URL = "http://localhost:5000/parties/actual?" + new URLSearchParams({
       username: localStorage.getItem("user.name")!,
-      room_code: localStorage.getItem("room")!
+      room_code: localStorage.getItem("room")!,
+      cube_name: cubeName!
     });
 
     const response = fetch(URL
@@ -257,12 +277,33 @@ export class HomeComponent implements AfterViewInit {
     const buttonScramble = document.createElement("button");
     buttonScramble.appendChild(document.createTextNode("view"));
     buttonScramble.className = "viewScrambleButton";
-    buttonScramble.setAttribute("scramble", lastSolve.scramble);
+    buttonScramble.setAttribute("round", nextSolveid);
+    buttonScramble.setAttribute("time", lastSolve.time);
     buttonScramble.setAttribute("scramble", lastSolve.scramble);
     buttonScramble.setAttribute("data-bs-toggle", "modal");
     buttonScramble.setAttribute("data-bs-target", "#showScramblePopup");
+    buttonScramble.addEventListener("click", event => { this.showSolveData(event.target) });
 
     tdScramble.appendChild(buttonScramble);
+  }
+
+  showSolveData(solve: any) {
+    const round = solve.getAttribute("round");
+    const scramble = solve.getAttribute("scramble");
+    const time = solve.getAttribute("time");
+
+    const solveRow = document.getElementById("showScrambleTable")?.children[1] as HTMLTableRowElement;
+    const deleteButton = document.getElementById("deleteSolveButton") as HTMLButtonElement;
+    
+    solveRow.children[0].textContent = round;
+    solveRow.children[1].textContent = time;
+    solveRow.children[2].textContent = scramble;
+    
+    deleteButton.setAttribute("solve_round", round);
+
+    deleteButton?.addEventListener("onclick", () => {
+      
+    })
   }
 
   generateScramble() {
@@ -678,7 +719,9 @@ export class HomeComponent implements AfterViewInit {
         response.json().then(cube => {
           localStorage.setItem("cube.movementTypes", cube.movement_types);
           localStorage.setItem("cube.movements_number", cube.movements_number);
+          localStorage.setItem("room", `${localStorage.getItem("room")?.substring(0, localStorage.getItem("room")?.lastIndexOf("-"))}-${cube.name}`);
           this.generateScramble();
+          this.showSolvesList(cubeName);
         });
       }
     }).catch(error => {

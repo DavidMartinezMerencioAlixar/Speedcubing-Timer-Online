@@ -28,9 +28,7 @@
 
 #controlsInfo {
     position: absolute;
-    // top: 20px;
-    // left: 320px;
-    bottom: 100px;
+    top: 20px;
     right: 20px;
     padding: 10px;
     background-color: #d9d9d956;
@@ -57,7 +55,7 @@
 
 app-visual-scramble {
     position: absolute;
-    top: 0;
+    bottom: 0;
     right: 0;
 }
 

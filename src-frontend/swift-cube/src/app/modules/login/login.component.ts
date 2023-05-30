@@ -35,7 +35,7 @@ export class LoginComponent implements AfterViewInit {
         response.json().then(user => {
           localStorage.setItem("user.data", user.username);
           localStorage.setItem("user.name", this.user.username);
-          localStorage.setItem("room", `${this.user.username}-local`);
+          localStorage.setItem("room", `${this.user.username}-local-3x3x3`);
         });
         window.location.href = "";
       } else {
