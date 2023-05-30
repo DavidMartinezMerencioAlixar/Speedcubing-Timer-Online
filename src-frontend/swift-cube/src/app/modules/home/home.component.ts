@@ -85,6 +85,22 @@ export class HomeComponent implements AfterViewInit {
       }
     });
 
+    window.addEventListener('keyup', (event: KeyboardEvent) => {
+      setTimeout(() => {
+        const time = document.getElementById("time");
+        if (event.key === ' ') {
+          this.keyPressed = false;
+          clearInterval(this.intervalId);
+          this.elapsedTime = Date.now() - this.startTime;
+          if (time != null) time.style.color = '';
+          if (this.readyToStart) {
+            this.readyToStart = false;
+            this.startTimer();
+          }
+        }
+      });
+    });
+
     window.addEventListener('mousedown', (event: MouseEvent) => {
       const targetId = (event.target as HTMLElement).id;
       const time = document.getElementById("time");
@@ -108,34 +124,64 @@ export class HomeComponent implements AfterViewInit {
       }
     });
 
-    window.addEventListener('keyup', (event: KeyboardEvent) => {
-      const time = document.getElementById("time");
-      if (event.key === ' ') {
-        this.keyPressed = false;
-        clearInterval(this.intervalId);
-        this.elapsedTime = Date.now() - this.startTime;
-        if (time != null) time.style.color = '';
-        if (this.readyToStart) {
-          this.readyToStart = false;
-          this.startTimer();
+    window.addEventListener('mouseup', (event: MouseEvent) => {
+      setTimeout(() => {
+        const targetId = (event.target as HTMLElement).id;
+        const time = document.getElementById("time");
+  
+        if (event.button === 0 && (targetId === "mainDiv" || targetId === "time")) {
+          this.keyPressed = false;
+          clearInterval(this.intervalId);
+          this.elapsedTime = Date.now() - this.startTime;
+          if (time != null) time.style.color = '';
+          if (this.readyToStart) {
+            this.readyToStart = false;
+            this.startTimer();
+          }
         }
-      }
+      });
     });
 
-    window.addEventListener('mouseup', (event: MouseEvent) => {
+    window.addEventListener('touchstart', (event: TouchEvent) => {
       const targetId = (event.target as HTMLElement).id;
       const time = document.getElementById("time");
 
-      if (event.button === 0 && (targetId === "mainDiv" || targetId === "time")) {
-        this.keyPressed = false;
-        clearInterval(this.intervalId);
-        this.elapsedTime = Date.now() - this.startTime;
-        if (time != null) time.style.color = '';
-        if (this.readyToStart) {
-          this.readyToStart = false;
-          this.startTimer();
-        }
+      if (this.runningTimer) {
+        this.stopTimer();
+      } else if ((targetId === "mainDiv" || targetId === "time")) {
+        if (time != null) time.style.color = 'red';
+        this.keyPressed = true;
+        this.startTime = Date.now();
+        this.intervalId = setInterval(() => {
+          this.elapsedTime = Date.now() - this.startTime;
+          this.readyToStart = this.elapsedTime >= 500;
+          if (this.readyToStart) {
+            if (time != null) {
+              time.style.color = 'green';
+              time.textContent = '0.00';
+            }
+          }
+        }, 10);
       }
+    });
+
+    window.addEventListener('touchend', (event: TouchEvent) => {
+      setTimeout(() => {
+        const targetId = (event.target as HTMLElement).id;
+        const time = document.getElementById("time");
+        console.log(event);
+        
+        if ((targetId === "mainDiv" || targetId === "time")) {
+          this.keyPressed = false;
+          clearInterval(this.intervalId);
+          this.elapsedTime = Date.now() - this.startTime;
+          if (time != null) time.style.color = '';
+          if (this.readyToStart) {
+            this.readyToStart = false;
+            this.startTimer();
+          }
+        }
+      }, 1);
     });
   }
 
