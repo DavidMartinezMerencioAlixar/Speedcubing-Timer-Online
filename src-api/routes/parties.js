@@ -24,7 +24,7 @@ router.get('/actual', function (req, res, next) {
                 if (err) res.status(500).send(err);
                 else if (party) {
                   const avgs = getAllAverages(party.solve_ids.length, party);
-                  return res.status(200).send({ party, avgs });
+                  return res.status(200).json({ party, avgs });
                 }
                 else return res.status(204).send();
               });

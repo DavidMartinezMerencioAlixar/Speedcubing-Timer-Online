@@ -88,19 +88,17 @@ export class HomeComponent implements AfterViewInit {
     });
 
     window.addEventListener('keyup', (event: KeyboardEvent) => {
-      setTimeout(() => {
-        const time = document.getElementById("time");
-        if (event.key === ' ') {
-          this.keyPressed = false;
-          clearInterval(this.intervalId);
-          this.elapsedTime = Date.now() - this.startTime;
-          if (time != null) time.style.color = '';
-          if (this.readyToStart) {
-            this.readyToStart = false;
-            this.startTimer();
-          }
+      const time = document.getElementById("time");
+      if (event.key === ' ') {
+        this.keyPressed = false;
+        clearInterval(this.intervalId);
+        this.elapsedTime = Date.now() - this.startTime;
+        if (time != null) time.style.color = '';
+        if (this.readyToStart) {
+          this.readyToStart = false;
+          this.startTimer();
         }
-      });
+      }
     });
 
     window.addEventListener('mousedown', (event: MouseEvent) => {
@@ -127,21 +125,19 @@ export class HomeComponent implements AfterViewInit {
     });
 
     window.addEventListener('mouseup', (event: MouseEvent) => {
-      setTimeout(() => {
-        const targetId = (event.target as HTMLElement).id;
-        const time = document.getElementById("time");
-  
-        if (event.button === 0 && (targetId === "mainDiv" || targetId === "time")) {
-          this.keyPressed = false;
-          clearInterval(this.intervalId);
-          this.elapsedTime = Date.now() - this.startTime;
-          if (time != null) time.style.color = '';
-          if (this.readyToStart) {
-            this.readyToStart = false;
-            this.startTimer();
-          }
+      const targetId = (event.target as HTMLElement).id;
+      const time = document.getElementById("time");
+
+      if (event.button === 0 && (targetId === "mainDiv" || targetId === "time")) {
+        this.keyPressed = false;
+        clearInterval(this.intervalId);
+        this.elapsedTime = Date.now() - this.startTime;
+        if (time != null) time.style.color = '';
+        if (this.readyToStart) {
+          this.readyToStart = false;
+          this.startTimer();
         }
-      });
+      }
     });
 
     window.addEventListener('touchstart', (event: TouchEvent) => {
@@ -169,22 +165,20 @@ export class HomeComponent implements AfterViewInit {
     });
 
     window.addEventListener('touchend', (event: TouchEvent) => {
-      setTimeout(() => {
-        const targetId = (event.target as HTMLElement).id;
-        const time = document.getElementById("time");
-        
-        if ((targetId === "mainDiv" || targetId === "time")) {
-          event.preventDefault();
-          this.keyPressed = false;
-          clearInterval(this.intervalId);
-          this.elapsedTime = Date.now() - this.startTime;
-          if (time != null) time.style.color = '';
-          if (this.readyToStart) {
-            this.readyToStart = false;
-            this.startTimer();
-          }
+      const targetId = (event.target as HTMLElement).id;
+      const time = document.getElementById("time");
+      
+      if ((targetId === "mainDiv" || targetId === "time")) {
+        event.preventDefault();
+        this.keyPressed = false;
+        clearInterval(this.intervalId);
+        this.elapsedTime = Date.now() - this.startTime;
+        if (time != null) time.style.color = '';
+        if (this.readyToStart) {
+          this.readyToStart = false;
+          this.startTimer();
         }
-      }, 1);
+      }
     });
   }
 
@@ -226,7 +220,11 @@ export class HomeComponent implements AfterViewInit {
 
   deleteSolve(solvePosition: Number) {
     console.log("deleteSolve");
-    const URL = `https://swiftcube-production.up.railway.app/solves/${solvePosition}`;
+    const URL = "http://localhost:5000/solves?"  + new URLSearchParams({
+      solve_position: solvePosition.toString(),
+      username: localStorage.getItem("user.name")!,
+      room_code: localStorage.getItem("room")!
+    });
 
     const response = fetch(URL, {
       method: "DELETE"
@@ -245,7 +243,7 @@ export class HomeComponent implements AfterViewInit {
     const username = localStorage.getItem("user.name");
     const room = localStorage.getItem("room");
 
-    const URL = "https://swiftcube-production.up.railway.app/parties";
+    const URL = "http://localhost:5000/parties";
 
     const response = fetch(URL, {
       method: "POST",
@@ -272,7 +270,7 @@ export class HomeComponent implements AfterViewInit {
     timesTable.innerHTML = "";
     timesTable.appendChild(timesTableHeader);
 
-    const URL = "https://swiftcube-production.up.railway.app/parties/actual?" + new URLSearchParams({
+    const URL = "http://localhost:5000/parties/actual?" + new URLSearchParams({
       username: localStorage.getItem("user.name")!,
       room_code: localStorage.getItem("room")!,
       cube_name: cubeName!
@@ -760,7 +758,7 @@ export class HomeComponent implements AfterViewInit {
   }
 
   async getCubeData(cubeName: String) {
-    const URL = `https://swiftcube-production.up.railway.app/cubes/${cubeName}`;
+    const URL = `http://localhost:5000/cubes/${cubeName}`;
 
     const response = await fetch(URL
     ).then(response => {
@@ -779,7 +777,7 @@ export class HomeComponent implements AfterViewInit {
   }
 
   async getAllCubes() {
-    const URL = "https://swiftcube-production.up.railway.app/cubes";
+    const URL = "http://localhost:5000/cubes";
 
     const response = await fetch(URL
     ).then(response => {
