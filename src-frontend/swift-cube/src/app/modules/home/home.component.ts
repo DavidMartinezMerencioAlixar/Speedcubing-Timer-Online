@@ -145,6 +145,7 @@ export class HomeComponent implements AfterViewInit {
     });
 
     window.addEventListener('touchstart', (event: TouchEvent) => {
+      event.preventDefault();
       const targetId = (event.target as HTMLElement).id;
       const time = document.getElementById("time");
 
@@ -168,10 +169,10 @@ export class HomeComponent implements AfterViewInit {
     });
 
     window.addEventListener('touchend', (event: TouchEvent) => {
+      event.preventDefault();
       setTimeout(() => {
         const targetId = (event.target as HTMLElement).id;
         const time = document.getElementById("time");
-        console.log(event);
         
         if ((targetId === "mainDiv" || targetId === "time")) {
           this.keyPressed = false;
