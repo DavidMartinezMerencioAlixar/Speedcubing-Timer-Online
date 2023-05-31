@@ -145,13 +145,13 @@ export class HomeComponent implements AfterViewInit {
     });
 
     window.addEventListener('touchstart', (event: TouchEvent) => {
-      event.preventDefault();
       const targetId = (event.target as HTMLElement).id;
       const time = document.getElementById("time");
 
       if (this.runningTimer) {
         this.stopTimer();
       } else if ((targetId === "mainDiv" || targetId === "time")) {
+        event.preventDefault();
         if (time != null) time.style.color = 'red';
         this.keyPressed = true;
         this.startTime = Date.now();
@@ -169,12 +169,12 @@ export class HomeComponent implements AfterViewInit {
     });
 
     window.addEventListener('touchend', (event: TouchEvent) => {
-      event.preventDefault();
       setTimeout(() => {
         const targetId = (event.target as HTMLElement).id;
         const time = document.getElementById("time");
         
         if ((targetId === "mainDiv" || targetId === "time")) {
+          event.preventDefault();
           this.keyPressed = false;
           clearInterval(this.intervalId);
           this.elapsedTime = Date.now() - this.startTime;
