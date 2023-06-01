@@ -57,7 +57,6 @@ export class HomeComponent implements AfterViewInit {
     cubeNameSpan?.addEventListener("click", () => { this.generateScramble(); });
 
     await this.getAllCubes().then(() => {
-      console.log(cubeNames.options);
       this.getCubeData(cubeNames.options[cubeNames.selectedIndex]?.value || "3x3x3");
     });
   }

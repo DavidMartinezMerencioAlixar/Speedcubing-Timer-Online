@@ -10,6 +10,9 @@ import { EditUserComponent } from './edit-user/edit-user.component';
 import { VisualScrambleComponent } from './visual-scramble/visual-scramble.component';
 import { ScrambleLocalComponent } from './scramble-local/scramble-local.component';
 import { TimesTableComponent } from './times-table/times-table.component';
+import { ControlPanelComponent } from './control-panel/control-panel.component';
+import { AdministrateUsersComponent } from './control-panel/administrate-users/administrate-users.component';
+import { AdministrateCubesComponent } from './control-panel/administrate-cubes/administrate-cubes.component';
 
 
 
@@ -24,6 +27,9 @@ import { TimesTableComponent } from './times-table/times-table.component';
     VisualScrambleComponent,
     ScrambleLocalComponent,
     TimesTableComponent,
+    ControlPanelComponent,
+    AdministrateUsersComponent,
+    AdministrateCubesComponent,
   ],
   imports: [
     CommonModule,

@@ -42,3 +42,17 @@ nav {
 #logout-img:hover, #logo:hover, #userData:hover {
     cursor: pointer;
 }
+
+#controlPanel {
+    font-size: 14px;
+    color: white;
+    background-color: #000074;
+    border-radius: 8px;
+    height: 30px;
+    margin-right: 30px;
+    border: none;
+}
+
+.noDisplay {
+    display: none;
+}

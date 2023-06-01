@@ -11,7 +11,7 @@ const SALT_WORK_FACTOR = 10;
 router.get('/', function (req, res, next) {
   User.find().exec(function (err, users) {
     if (err) res.status(500).send(err);
-    else res.status(200).json({ username: user.username });
+    else res.status(200).json({ users });
   });
 });
 
@@ -19,7 +19,7 @@ router.get('/', function (req, res, next) {
 router.get("/:username", function (req, res, next) {
   User.findOne({ username: req.params.username }).exec(function (err, user) {
     if (err) res.status(500).send(err);
-    else res.status(200).json({ username: user.username });
+    else res.status(200).json({ username: user.username, admin: user.admin });
   });
 });
 
