@@ -24,6 +24,7 @@
                     <app-button buttonType="submit" buttonText="Update" [isDisabled]="!editForm.form.valid"></app-button>
                 </diV>
             </form>
+            <button id="deleteUserButton" (click)="deleteUser()" [disabled]="!editForm.form.valid"><img src="assets/img/delete-icon.png"></button>
         </div>
     </div>
 </div>

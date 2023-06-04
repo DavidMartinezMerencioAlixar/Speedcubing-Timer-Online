@@ -4,6 +4,7 @@ var { body, validationResult } = require('express-validator');
 var User = require("../models/User");
 var Room = require("../models/Room");
 var Cube = require("../models/Cube");
+var Party = require("../models/Party");
 var bcrypt = require('bcryptjs')
 const SALT_WORK_FACTOR = 10;
 
@@ -19,7 +20,7 @@ router.get('/', function (req, res, next) {
 router.get("/:username", function (req, res, next) {
   User.findOne({ username: req.params.username }).exec(function (err, user) {
     if (err) res.status(500).send(err);
-    else res.status(200).json({ username: user.username, admin: user.admin });
+    else if (user) res.status(200).json({ username: user.username, admin: user.admin });
   });
 });
 
@@ -129,9 +130,29 @@ router.put("/", function (req, res, next) {
 
 /* DELETE an user */
 router.delete("/:username", function (req, res, next) {
-  User.findOneAndRemove({ username: req.params.username }, function (err, user) {
+  User.findOne({ username: req.params.username }).exec(function (err, user) {
     if (err) res.status(500).send(err);
-    else res.sendStatus(200);
+    else if (user) {
+      bcrypt.compare(req.body.password, user.password, function (err, matchPasswords) {
+        if (err) res.status(500).send(err);
+        else if (matchPasswords) {
+          User.findOneAndRemove({ username: req.params.username }, function (err, user) {
+            if (err) res.status(500).send(err);
+            else if (user) {
+              Room.deleteMany({ room_code: { $regex: `${user.username}-local-` } }, function (err, room) {
+                if (err) res.status(500).send(err);
+                else {
+                  Party.deleteMany({ user_id: user._id }, function (err, party) {
+                    if (err) res.status(500).send(err);
+                    else return res.status(200).send();
+                  });
+                }
+              });
+            }
+          });
+        }
+      });
+    }
   });
 });
 

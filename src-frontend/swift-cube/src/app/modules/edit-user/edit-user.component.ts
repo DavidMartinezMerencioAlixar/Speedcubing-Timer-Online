@@ -54,12 +54,37 @@ export class EditUserComponent implements AfterViewInit {
             }).then(response => { localStorage.setItem("room", `${this.user.username}-local`); });
           }
         });
-        // window.location.href = "";
+        window.location.href = "";
       } else {
         window.location.reload();
       }
     }).catch(error => {
       console.error("Error updating an user:", error);
     });
+  }
+
+  async deleteUser() {
+    const URL = `https://swiftcube-production.up.railway.app/users/${localStorage.getItem("user.name")}`;
+    const encryptedPassword = CryptoJS.AES.encrypt(this.user.password, "/nm8z3}KkeXVpsL").toString();
+
+    const response = await fetch(URL , {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ password: encryptedPassword })
+    }).then(response => {
+      if (response.ok) this.toLoggedOutNavigation();
+    }).catch(error => {
+      console.error("Error updating an user:", error);
+    });
+  }
+
+  toLoggedOutNavigation() {
+    localStorage.setItem("loggedUser", "n");
+    localStorage.removeItem("user.data");
+    localStorage.removeItem("user.name");
+    localStorage.removeItem("room");
+    window.location.href = "";
   }
 }

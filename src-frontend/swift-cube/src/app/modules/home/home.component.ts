@@ -63,13 +63,14 @@ export class HomeComponent implements AfterViewInit {
 
   constructor() {
     window.addEventListener('keydown', (event: KeyboardEvent) => {
+      const time = document.getElementById("time") as  HTMLElement;
       if (event.key === ' ') {
         event.preventDefault();
       }
-      const time = document.getElementById("time");
       if (this.runningTimer) {
         this.stopTimer();
       } else if (!this.keyPressed && event.key === ' ') {
+        time.textContent = '0.00';
         if (time != null) time.style.color = 'red';
         this.keyPressed = true;
         this.startTime = Date.now();
@@ -79,7 +80,6 @@ export class HomeComponent implements AfterViewInit {
           if (this.readyToStart) {
             if (time != null) {
               time.style.color = 'green';
-              time.textContent = '0.00';
             }
           }
         }, 10);
@@ -102,11 +102,12 @@ export class HomeComponent implements AfterViewInit {
 
     window.addEventListener('mousedown', (event: MouseEvent) => {
       const targetId = (event.target as HTMLElement).id;
-      const time = document.getElementById("time");
+      const time = document.getElementById("time") as HTMLElement;
 
       if (this.runningTimer) {
         this.stopTimer();
       } else if (!this.keyPressed && event.button === 0 && (targetId === "mainDiv" || targetId === "time")) {
+        time.textContent = '0.00';
         if (time != null) time.style.color = 'red';
         this.keyPressed = true;
         this.startTime = Date.now();
@@ -116,7 +117,6 @@ export class HomeComponent implements AfterViewInit {
           if (this.readyToStart) {
             if (time != null) {
               time.style.color = 'green';
-              time.textContent = '0.00';
             }
           }
         }, 10);
@@ -141,12 +141,13 @@ export class HomeComponent implements AfterViewInit {
 
     window.addEventListener('touchstart', (event: TouchEvent) => {
       const targetId = (event.target as HTMLElement).id;
-      const time = document.getElementById("time");
+      const time = document.getElementById("time") as HTMLElement;
 
       if (this.runningTimer) {
         this.stopTimer();
       } else if ((targetId === "mainDiv" || targetId === "time")) {
         event.preventDefault();
+        time.textContent = '0.00';
         if (time != null) time.style.color = 'red';
         this.keyPressed = true;
         this.startTime = Date.now();
@@ -156,7 +157,6 @@ export class HomeComponent implements AfterViewInit {
           if (this.readyToStart) {
             if (time != null) {
               time.style.color = 'green';
-              time.textContent = '0.00';
             }
           }
         }, 10);
@@ -293,6 +293,11 @@ export class HomeComponent implements AfterViewInit {
   calculateAvgs(avgs: Array<string>) {
     const avgsAmount = [3, 5, 12, 25, 50, 100, 200, 500, 1000, 2000, 10000];
     const solvesTds = document.getElementsByClassName("current");
+
+    for (const i in solvesTds) {
+      const tr = (solvesTds[i].parentNode as HTMLTableRowElement);
+      if (tr !== undefined) tr.classList.add("noDisplay");
+    }
 
     (document.getElementsByClassName("current")[0] as HTMLTableRowElement).textContent = (document.getElementById("time") as HTMLElement).textContent;
 

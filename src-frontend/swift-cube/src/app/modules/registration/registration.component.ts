@@ -18,10 +18,16 @@ export class RegistrationComponent implements AfterViewInit {
     return new User("", "", "");
   }
 
+  validPassword() {
+    return !document.querySelectorAll("input")[1].classList.contains("ng-dirty") ||
+      document.querySelectorAll("input")[1].classList.contains("ng-dirty") &&
+      this.user.password.match(/^(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/);
+  }
+
   matchPasswords() {
-      return document.querySelectorAll("input")[1].className.match("ng-touched") === null ||
-        document.querySelectorAll("input")[2].className.match("ng-touched") === null ||
-        this.user.password === this.user.confirmPassword
+    return !document.querySelectorAll("input")[2].classList.contains("ng-dirty") ||
+      document.querySelectorAll("input")[2].classList.contains("ng-dirty") &&
+      this.user.password === this.user.confirmPassword;
   }
 
   async registerUser() {

@@ -19,7 +19,10 @@
                     <input type="password" class="form-control showValidation" id="confirmPassword" required [(ngModel)]="user.confirmPassword"
                         name="confirmPassword" placeholder="confirm password" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$">
                     <br>
-                    <div *ngIf="!matchPasswords()" class="alert alert-danger">
+                    <div *ngIf="!validPassword()" class="alert alert-danger">
+                        8 characters length, 1 uppercase, 1 lowercase and 1 special character
+                    </div>
+                    <div *ngIf="validPassword() && !matchPasswords()" class="alert alert-danger">
                         Passwords don't match
                     </div>
                 </div>

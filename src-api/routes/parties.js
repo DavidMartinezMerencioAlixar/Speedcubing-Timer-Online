@@ -66,42 +66,22 @@ router.post('/', [
           else if (cube) {
             Room.findOne({ room_code: req.body.room, cube_name: cube._id }).exec(function (err, room) {
               if (err) res.status(500).send(err);
-              else if (user !== null && room !== null) {
-                // If the party (user + room) exists, adds the solve. If not, creates a new one and with that first solve
-                Party.findOne({ "data.user_id": user._id, "data.room_id": room._id }).exec(function (err, party) {
-                  if (err) res.status(500).send(err);
-                  else if (party !== null) {
-                    // Adds the solve to the party solves list
-                    party.solve_ids.push(solve._id);
-                    party.save();
-                    party.populate("solve_ids", function (err, solves) {
-                      const solvesAmount = solves.solve_ids.length;
-                      const lastSolve = solves.solve_ids[solvesAmount - 1];
-                      const avgs = getAllAverages(solvesAmount, solves);
-
-                      return res.status(200).json({ lastSolve, solvesAmount, avgs });
-                    });
-                  } else {
-                    // Creates the party with that first solve
-                    Party.create({
-                      data: {
-                        user_id: user._id.toString(),
-                        room_id: room._id.toString()
-                      },
-                      solve_ids: [solve._id.toString()]
-                    }).then(party => {
-                      party.populate("solve_ids", function (err, solves) {
-                        const solvesAmount = solves.solve_ids.length;
-                        const lastSolve = solves.solve_ids[solvesAmount - 1];
-                        const avgs = getAllAverages(solvesAmount, solves);
-
-                        return res.status(200).json({ lastSolve, solvesAmount, avgs });
-                      });
-                    }).catch(error => res.status(500).send(error));
-                  }
-                });
+              else if (user) {
+                if (!room) {
+                  Room.create({
+                    cube_name: cube._id,
+                    room_code: req.body.room,
+                    competitors_number: 1
+                  }).then(() => {
+                    if (err) res.status(500).send(err);
+                    else manageParty(user, solve, room, err, res);
+                  });
+                  console.log("room creada");
+                } else {
+                  manageParty(user, solve, room, err, res);
+                }
               } else {
-                return res.status(500).send("User or room are null");
+                return res.status(500).send("User is null");
               }
             });
           }
@@ -112,6 +92,42 @@ router.post('/', [
     }
   });
 });
+
+function manageParty (user, solve, room, err, res) {
+  // If the party (user + room) exists, adds the solve. If not, creates a new one and with that first solve
+  Party.findOne({ "data.user_id": user._id, "data.room_id": room._id }).exec(function (err, party) {
+    if (err) res.status(500).send(err);
+    else if (party !== null) {
+      // Adds the solve to the party solves list
+      party.solve_ids.push(solve._id);
+      party.save();
+      party.populate("solve_ids", function (err, solves) {
+        const solvesAmount = solves.solve_ids.length;
+        const lastSolve = solves.solve_ids[solvesAmount - 1];
+        const avgs = getAllAverages(solvesAmount, solves);
+
+        return res.status(200).json({ lastSolve, solvesAmount, avgs });
+      });
+    } else {
+      // Creates the party with that first solve
+      Party.create({
+        data: {
+          user_id: user._id.toString(),
+          room_id: room._id.toString()
+        },
+        solve_ids: [solve._id.toString()]
+      }).then(party => {
+        party.populate("solve_ids", function (err, solves) {
+          const solvesAmount = solves.solve_ids.length;
+          const lastSolve = solves.solve_ids[solvesAmount - 1];
+          const avgs = getAllAverages(solvesAmount, solves);
+
+          return res.status(200).json({ lastSolve, solvesAmount, avgs });
+        });
+      }).catch(error => res.status(500).send(error));
+    }
+  });
+}
 
 function getAllAverages(solvesAmount, solves) {
   const avgs = [];

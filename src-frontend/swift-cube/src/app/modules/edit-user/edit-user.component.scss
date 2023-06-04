@@ -46,3 +46,24 @@
     justify-content: center;
     align-items: center;
 }
+
+#deleteUserButton {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    background: none;
+    border: none;
+}
+
+#deleteUserButton:hover {
+    cursor: pointer;
+}
+
+#deleteUserButton:disabled {
+    cursor: not-allowed;
+}
+
+#deleteUserButton img {
+    width: auto;
+    height: 60px;
+}
