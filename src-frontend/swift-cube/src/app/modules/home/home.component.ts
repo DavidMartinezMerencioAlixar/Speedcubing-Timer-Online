@@ -30,7 +30,7 @@ export class HomeComponent implements AfterViewInit {
       }
       this.getCubeData(selectedCube);
     });
-    
+
     const closeControlsInfo = document.getElementById('closeControlsInfo') as HTMLButtonElement;
     const dontShowInfoAgain = document.getElementById('dontShowInfoAgain') as HTMLAnchorElement;
     const controlsInfo = document.getElementById('controlsInfo') as HTMLDialogElement;
@@ -63,7 +63,7 @@ export class HomeComponent implements AfterViewInit {
 
   constructor() {
     window.addEventListener('keydown', (event: KeyboardEvent) => {
-      const time = document.getElementById("time") as  HTMLElement;
+      const time = document.getElementById("time") as HTMLElement;
       if (event.key === ' ') {
         event.preventDefault();
       }
@@ -166,7 +166,7 @@ export class HomeComponent implements AfterViewInit {
     window.addEventListener('touchend', (event: TouchEvent) => {
       const targetId = (event.target as HTMLElement).id;
       const time = document.getElementById("time");
-      
+
       if ((targetId === "mainDiv" || targetId === "time")) {
         event.preventDefault();
         this.keyPressed = false;
@@ -219,7 +219,7 @@ export class HomeComponent implements AfterViewInit {
 
   deleteSolve(solvePosition: Number) {
     console.log("deleteSolve");
-    const URL = "https://swiftcube-production.up.railway.app/solves?"  + new URLSearchParams({
+    const URL = "https://swiftcube-production.up.railway.app/solves?" + new URLSearchParams({
       solve_position: solvePosition.toString(),
       username: localStorage.getItem("user.name")!,
       room_code: localStorage.getItem("room")!
@@ -249,7 +249,7 @@ export class HomeComponent implements AfterViewInit {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ time: time, scramble: scramble, video: video, username: username, room:  room, cube_name: cubeName })
+      body: JSON.stringify({ time: time, scramble: scramble, video: video, username: username, room: room, cube_name: cubeName })
     }).then(response => {
       if (response.ok) {
         response.json().then(lastSolve => {
@@ -296,7 +296,7 @@ export class HomeComponent implements AfterViewInit {
 
     for (const i in solvesTds) {
       const tr = (solvesTds[i].parentNode as HTMLTableRowElement);
-      if (tr !== undefined) tr.classList.add("noDisplay");
+      if (tr !== undefined && tr.id !== "lastTime") tr.classList.add("noDisplay");
     }
 
     (document.getElementsByClassName("current")[0] as HTMLTableRowElement).textContent = (document.getElementById("time") as HTMLElement).textContent;
@@ -312,7 +312,7 @@ export class HomeComponent implements AfterViewInit {
 
   appendSolveToList(lastSolve: any, nextSolveid: any) {
     const timesTable = document.getElementById("currentTimeTable") as HTMLTableElement;
-    
+
     const tr = timesTable.insertRow(1);
 
     const tdRound = document.createElement("td");
@@ -345,15 +345,15 @@ export class HomeComponent implements AfterViewInit {
 
     const solveRow = document.getElementById("showScrambleTable")?.children[1] as HTMLTableRowElement;
     const deleteButton = document.getElementById("deleteSolveButton") as HTMLButtonElement;
-    
+
     solveRow.children[0].textContent = round;
     solveRow.children[1].textContent = time;
     solveRow.children[2].textContent = scramble;
-    
+
     deleteButton.setAttribute("solve_round", round);
 
     deleteButton?.addEventListener("onclick", () => {
-      
+
     })
   }
 
@@ -462,19 +462,19 @@ export class HomeComponent implements AfterViewInit {
           break;
         case "L'":
           this.antiClockwiseMovement(leftFaceArray, this.rotateArrayAnticlockwise(backFaceArray), this.rotateArrayClockwise(downFaceArray),
-          this.rotateArrayClockwise(frontFaceArray), this.rotateArrayClockwise(upFaceArray));
+            this.rotateArrayClockwise(frontFaceArray), this.rotateArrayClockwise(upFaceArray));
           break;
         case "F'":
           this.antiClockwiseMovement(frontFaceArray, this.rotateArrayAnticlockwise(leftFaceArray), downFaceArray,
-          this.rotateArrayClockwise(rightFaceArray), this.rotateArrayDouble(upFaceArray));
+            this.rotateArrayClockwise(rightFaceArray), this.rotateArrayDouble(upFaceArray));
           break;
         case "R'":
           this.antiClockwiseMovement(rightFaceArray, this.rotateArrayAnticlockwise(frontFaceArray), this.rotateArrayAnticlockwise(downFaceArray),
-          this.rotateArrayClockwise(backFaceArray), this.rotateArrayAnticlockwise(upFaceArray));
+            this.rotateArrayClockwise(backFaceArray), this.rotateArrayAnticlockwise(upFaceArray));
           break;
         case "B'":
           this.antiClockwiseMovement(backFaceArray, this.rotateArrayAnticlockwise(rightFaceArray), this.rotateArrayDouble(downFaceArray),
-          this.rotateArrayClockwise(leftFaceArray), upFaceArray);
+            this.rotateArrayClockwise(leftFaceArray), upFaceArray);
           break;
         case "D'":
           this.antiClockwiseMovement(downFaceArray, this.rotateArrayDouble(leftFaceArray), this.rotateArrayDouble(backFaceArray),
@@ -485,19 +485,19 @@ export class HomeComponent implements AfterViewInit {
           break;
         case "L2":
           this.doubleMovement(leftFaceArray, this.rotateArrayAnticlockwise(backFaceArray), this.rotateArrayClockwise(downFaceArray),
-          this.rotateArrayClockwise(frontFaceArray), this.rotateArrayClockwise(upFaceArray));
+            this.rotateArrayClockwise(frontFaceArray), this.rotateArrayClockwise(upFaceArray));
           break;
         case "F2":
           this.doubleMovement(frontFaceArray, this.rotateArrayAnticlockwise(leftFaceArray), downFaceArray,
-          this.rotateArrayClockwise(rightFaceArray), this.rotateArrayDouble(upFaceArray));
+            this.rotateArrayClockwise(rightFaceArray), this.rotateArrayDouble(upFaceArray));
           break;
         case "R2":
           this.doubleMovement(rightFaceArray, this.rotateArrayAnticlockwise(frontFaceArray), this.rotateArrayAnticlockwise(downFaceArray),
-          this.rotateArrayClockwise(backFaceArray), this.rotateArrayAnticlockwise(upFaceArray));
+            this.rotateArrayClockwise(backFaceArray), this.rotateArrayAnticlockwise(upFaceArray));
           break;
         case "B2":
           this.doubleMovement(backFaceArray, this.rotateArrayAnticlockwise(rightFaceArray), this.rotateArrayDouble(downFaceArray),
-          this.rotateArrayClockwise(leftFaceArray), upFaceArray);
+            this.rotateArrayClockwise(leftFaceArray), upFaceArray);
           break;
         case "D2":
           this.doubleMovement(downFaceArray, this.rotateArrayDouble(leftFaceArray), this.rotateArrayDouble(backFaceArray),
@@ -575,7 +575,7 @@ export class HomeComponent implements AfterViewInit {
     const cornerFrontUL = frontFace[0];
     const cornerRightUL = rightFace[0];
     const cornerBackUL = backFace[0];
-    
+
     const cornerLeftUR = leftFace[2];
     const cornerFrontUR = frontFace[2];
     const cornerRightUR = rightFace[2];
@@ -591,7 +591,7 @@ export class HomeComponent implements AfterViewInit {
     edgeUpL.className = edgeUpD.className;
     edgeUpD.className = edgeUpR.className;
     edgeUpR.className = edgeUpUClassName;
-    
+
     edgeLeft.className = edgeFront.className;
     edgeFront.className = edgeRight.className;
     edgeRight.className = edgeBack.className;
@@ -634,7 +634,7 @@ export class HomeComponent implements AfterViewInit {
     const cornerFrontUL = frontFace[0];
     const cornerRightUL = rightFace[0];
     const cornerBackUL = backFace[0];
-    
+
     const cornerLeftUR = leftFace[2];
     const cornerFrontUR = frontFace[2];
     const cornerRightUR = rightFace[2];
@@ -693,7 +693,7 @@ export class HomeComponent implements AfterViewInit {
     const cornerFrontUL = frontFace[0];
     const cornerRightUL = rightFace[0];
     const cornerBackUL = backFace[0];
-    
+
     const cornerLeftUR = leftFace[2];
     const cornerFrontUR = frontFace[2];
     const cornerRightUR = rightFace[2];
@@ -714,7 +714,7 @@ export class HomeComponent implements AfterViewInit {
     edgeUpD.className = edgeUpUClassName;
     edgeUpL.className = edgeUpR.className;
     edgeUpR.className = edgeUpLClassName;
-    
+
     edgeLeft.className = edgeRight.className;
     edgeRight.className = edgeLeftClassName;
     edgeFront.className = edgeBack.className;
