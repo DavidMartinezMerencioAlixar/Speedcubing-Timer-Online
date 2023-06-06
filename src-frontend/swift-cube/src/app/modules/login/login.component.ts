@@ -22,7 +22,7 @@ export class LoginComponent implements AfterViewInit {
   async loginUser() {
     const URL = "https://swiftcube-production.up.railway.app/users/login";
     const encryptedPassword = CryptoJS.AES.encrypt(this.user.password, "/nm8z3}KkeXVpsL").toString();
-    
+
     const response = await fetch(URL, {
       method: "POST",
       headers: {

@@ -27,7 +27,7 @@ export class EditUserComponent implements AfterViewInit {
     const encryptedPassword = CryptoJS.AES.encrypt(this.user.password, "/nm8z3}KkeXVpsL").toString();
     const encryptedConfirmPassword = CryptoJS.AES.encrypt(this.user.confirmPassword, "/nm8z3}KkeXVpsL").toString();
 
-    const response = await fetch(URL , {
+    const response = await fetch(URL, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json"
@@ -45,7 +45,7 @@ export class EditUserComponent implements AfterViewInit {
               oldRoomCode: oldRoomCode
             });
 
-            const response = fetch(URL , {
+            const response = fetch(URL, {
               method: "PUT",
               headers: {
                 "Content-Type": "application/json"
@@ -67,7 +67,7 @@ export class EditUserComponent implements AfterViewInit {
     const URL = `https://swiftcube-production.up.railway.app/users/${localStorage.getItem("user.name")}`;
     const encryptedPassword = CryptoJS.AES.encrypt(this.user.password, "/nm8z3}KkeXVpsL").toString();
 
-    const response = await fetch(URL , {
+    const response = await fetch(URL, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json"
