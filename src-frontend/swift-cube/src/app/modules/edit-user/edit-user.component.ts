@@ -36,6 +36,8 @@ export class EditUserComponent implements AfterViewInit {
     }).then(response => {
       if (response.status === 200) {
         response.json().then(user => {
+          console.log(user, this.user.username);
+
           localStorage.setItem("user.data", user.username);
           localStorage.setItem("user.name", this.user.username);
           const oldRoomCode = localStorage.getItem("room");

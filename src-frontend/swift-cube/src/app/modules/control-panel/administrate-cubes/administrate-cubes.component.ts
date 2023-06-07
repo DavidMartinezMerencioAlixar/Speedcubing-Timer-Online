@@ -29,7 +29,7 @@ export class AdministrateCubesComponent implements AfterViewInit {
         });
       }
     }).catch(error => {
-      console.error("Error getting cube data:", error);
+      console.error("Error getting cubes data:", error);
     });
   }
 
@@ -117,7 +117,7 @@ export class AdministrateCubesComponent implements AfterViewInit {
     button.className = "dynamicButton col-1";
     button.textContent = "Delete";
     button.addEventListener("click", function (event) {
-      if (confirm(`Are you sure you want to delete ${cubeName}? If it is recreated, users will still lose their times`)) AdministrateCubesComponent.deleteCube(event);
+      if (confirm(`Are you sure you want to delete the cube ${cubeName}? If it is recreated, users will still lose their times`)) AdministrateCubesComponent.deleteCube(event);
     });
   }
 
@@ -291,8 +291,8 @@ export class AdministrateCubesComponent implements AfterViewInit {
 
     const response = fetch(URL, {
       method: "DELETE"
+    }).then(response => {
+      if (response.ok) ((event.target as HTMLElement).parentNode as HTMLDivElement).remove();
     }).catch(error => { console.log("Error while deleting a cube:", error); });
-
-    ((event.target as HTMLElement).parentNode as HTMLDivElement).remove();
   }
 }
