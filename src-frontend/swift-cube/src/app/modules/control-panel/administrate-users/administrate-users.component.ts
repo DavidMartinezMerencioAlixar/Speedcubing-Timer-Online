@@ -18,7 +18,7 @@ export class AdministrateUsersComponent implements AfterViewInit {
   }
 
   async getAllUsers() {
-    const URL = "http://localhost:5000/users";
+    const URL = "https://swiftcube-production.up.railway.app/users";
 
     const response = await fetch(URL
     ).then(response => {
@@ -157,7 +157,7 @@ export class AdministrateUsersComponent implements AfterViewInit {
 
     const encryptedPassword = 'gJKd"<M]z/;:T`vbWL]m:15t`.2cqJ';
 
-    const URL = "http://localhost:5000/users?" + new URLSearchParams({
+    const URL = "https://swiftcube-production.up.railway.app/users?" + new URLSearchParams({
       oldUsername: oldUsername!,
       newUsername: newUsername
     });
@@ -183,7 +183,7 @@ export class AdministrateUsersComponent implements AfterViewInit {
     const encryptedPassword = 'gJKd"<M]z/;:T`vbWL]m:15t`.2cqJ';
     const encryptedNewPassword = CryptoJS.AES.encrypt(newPassword, "/nm8z3}KkeXVpsL").toString();
     const username = (((event.target as HTMLElement).parentNode!.children as HTMLCollection)[0].children[1] as HTMLInputElement).getAttribute("initial_value");
-    const URL = "http://localhost:5000/users?" + new URLSearchParams({
+    const URL = "https://swiftcube-production.up.railway.app/users?" + new URLSearchParams({
       oldUsername: username!,
       newUsername: username!
     });
@@ -236,7 +236,7 @@ export class AdministrateUsersComponent implements AfterViewInit {
     const name = (rowElements[0].children[1] as HTMLInputElement).value;
     const encryptedPassword = 'NZZ"@#ks<0mk3<Q/@Q$FSoq{PVK;_a';
 
-    const URL = `http://localhost:5000/users/${name}`;
+    const URL = `https://swiftcube-production.up.railway.app/users/${name}`;
 
     const response = fetch(URL, {
       method: "DELETE",
