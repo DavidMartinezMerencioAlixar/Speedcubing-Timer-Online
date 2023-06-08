@@ -1,4 +1,5 @@
 import { Component, AfterViewInit, Renderer2 } from '@angular/core';
+import * as CryptoJS from "crypto-js";
 
 @Component({
   selector: 'app-administrate-users',
@@ -17,7 +18,7 @@ export class AdministrateUsersComponent implements AfterViewInit {
   }
 
   async getAllUsers() {
-    const URL = "https://swiftcube-production.up.railway.app/users";
+    const URL = "http://localhost:5000/users";
 
     const response = await fetch(URL
     ).then(response => {
@@ -70,7 +71,7 @@ export class AdministrateUsersComponent implements AfterViewInit {
     this.renderer.appendChild(div, label);
     this.renderer.appendChild(div, input);
 
-    div.className = "col-3";
+    div.className = "col-2";
     label.htmlFor = "movement_types";
     label.classList.add("dynamicLabel");
     label.textContent = "Admin";
@@ -81,8 +82,6 @@ export class AdministrateUsersComponent implements AfterViewInit {
     input.checked = isAdmin;
 
     /* Options buttons */
-
-    //New reset password button + reorder columns
 
     let button = this.renderer.createElement("button") as HTMLButtonElement;
     this.renderer.appendChild(rowDiv, button);
@@ -98,11 +97,25 @@ export class AdministrateUsersComponent implements AfterViewInit {
 
     button = this.renderer.createElement("button") as HTMLButtonElement;
     this.renderer.appendChild(rowDiv, button);
+    button.className = "dynamicButton col-2";
+    button.textContent = "Reset password";
+    button.addEventListener("click", function (event) { AdministrateUsersComponent.resetPassword(event); });
+
+    button = this.renderer.createElement("button") as HTMLButtonElement;
+    this.renderer.appendChild(rowDiv, button);
     button.className = "dynamicButton col-1";
     button.textContent = "Delete";
     button.addEventListener("click", function (event) {
       if (confirm(`Are you sure you want to delete the user ${username}?`)) AdministrateUsersComponent.deleteUser(event);
     });
+
+    /* New password span */
+    div = this.renderer.createElement("div") as HTMLDivElement;
+    let span = this.renderer.createElement("span") as HTMLSpanElement;
+    this.renderer.appendChild(rowDiv, div);
+    this.renderer.appendChild(div, span);
+
+    div.className = "col-2";
   }
 
   static enableEdition(event: Event) {
@@ -141,11 +154,10 @@ export class AdministrateUsersComponent implements AfterViewInit {
     const oldUsername = (rowElements[0].children[1] as HTMLInputElement).getAttribute("initial_value");
     const newUsername = (rowElements[0].children[1] as HTMLInputElement).value;
     const isAdmin = (rowElements[1].children[1] as HTMLInputElement).checked;
-    console.log(isAdmin);
 
     const encryptedPassword = 'gJKd"<M]z/;:T`vbWL]m:15t`.2cqJ';
 
-    const URL = "https://swiftcube-production.up.railway.app/users?" + new URLSearchParams({
+    const URL = "http://localhost:5000/users?" + new URLSearchParams({
       oldUsername: oldUsername!,
       newUsername: newUsername
     });
@@ -156,9 +168,66 @@ export class AdministrateUsersComponent implements AfterViewInit {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({ oldPassword: encryptedPassword, admin: isAdmin })
+    }).then(response => {
+      if (response.ok) response.json().then(user => {
+        (rowElements[0].children[1] as HTMLInputElement).setAttribute("initial_value", newUsername);
+        // if (!user.admin) window.location.href = "";
+      })
     }).catch(error => { console.log("Error while updating an user:", error); });
 
     this.disableEdition(event);
+  }
+
+  static async resetPassword(event: Event) {
+    const newPassword = AdministrateUsersComponent.generatePassword();
+    const encryptedPassword = 'gJKd"<M]z/;:T`vbWL]m:15t`.2cqJ';
+    const encryptedNewPassword = CryptoJS.AES.encrypt(newPassword, "/nm8z3}KkeXVpsL").toString();
+    const username = (((event.target as HTMLElement).parentNode!.children as HTMLCollection)[0].children[1] as HTMLInputElement).getAttribute("initial_value");
+    const URL = "http://localhost:5000/users?" + new URLSearchParams({
+      oldUsername: username!,
+      newUsername: username!
+    });
+
+    const response = await fetch(URL, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ oldPassword: encryptedPassword, newPassword: encryptedNewPassword })
+    }).then(response => {
+      if (response.ok) {
+        const rowElements = (event.target as HTMLElement).parentNode!.children as HTMLCollection;
+        rowElements[6].children[0].innerHTML = `<b>New password</b> ${newPassword}`;
+      }
+    });
+  }
+
+  static generatePassword() {
+    const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
+    const specialChars = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+    const allChars = uppercaseChars + lowercaseChars + specialChars;
+
+    let randomPassword = '';
+
+    // Generate random uppercase character
+    randomPassword += uppercaseChars.charAt(Math.floor(Math.random() * uppercaseChars.length));
+
+    // Generate random lowercase character
+    randomPassword += lowercaseChars.charAt(Math.floor(Math.random() * lowercaseChars.length));
+
+    // Generate random special character
+    randomPassword += specialChars.charAt(Math.floor(Math.random() * specialChars.length));
+
+    // Generate the rest of the characters
+    for (let i = 0; i < 5; i++) {
+      randomPassword += allChars.charAt(Math.floor(Math.random() * allChars.length));
+    }
+
+    // Scramble the password for it to be in a random order
+    randomPassword = randomPassword.split('').sort(function () { return 0.5 - Math.random() }).join('');
+
+    return randomPassword;
   }
 
   static deleteUser(event: Event) {
@@ -167,7 +236,7 @@ export class AdministrateUsersComponent implements AfterViewInit {
     const name = (rowElements[0].children[1] as HTMLInputElement).value;
     const encryptedPassword = 'NZZ"@#ks<0mk3<Q/@Q$FSoq{PVK;_a';
 
-    const URL = `https://swiftcube-production.up.railway.app/users/${name}`;
+    const URL = `http://localhost:5000/users/${name}`;
 
     const response = fetch(URL, {
       method: "DELETE",

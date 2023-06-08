@@ -117,22 +117,41 @@ router.put("/", function (req, res, next) {
           bcrypt.hash(req.body.newPassword !== undefined ? req.body.newPassword : "", SALT_WORK_FACTOR, function (err3, hash) {
             if (err3) return next(err3);
             const updateData = req.body.newPassword === "" || req.body.newPassword === undefined ?
-              { username: req.query.newUsername, admin: req.body.admin ? req.body.admin : false } :
-              { username: req.query.newUsername, password: hash, admin: req.body.admin !== undefined ? req.body.admin : false };
+              { username: req.query.newUsername, admin: req.body.admin ? req.body.admin : user.admin } :
+              { username: req.query.newUsername, password: hash, admin: req.body.admin ? req.body.admin : user.admin };
+            console.log(updateData);
             User.updateOne({ username: req.query.oldUsername },
               updateData, function (err3, res3) {
                 if (err3) return res.status(500).send(err3);
                 bcrypt.hash(user.username, SALT_WORK_FACTOR, function (err4, hash) {
                   if (err4) return next(err4);
                   else if (user) {
-                    Room.find({ room_code: { $regex: `${user.username}-local-` } }).exec(function (err, rooms) {
+                    Room.find({ room_code: { $regex: `${user.username}-local-` } }).exec((err, rooms) => {
+                      console.log(rooms);
+                    })
+                    Room.updateMany(
+                      { room_code: { $regex: `${user.username}-local-` } },
+                      [{
+                        $set: {
+                          room_code: {
+                            $replaceAll: {
+                              input: "$room_code",
+                              find: `${user.username}-local-`,
+                              replacement: `${req.query.newUsername}-local-`
+                            }
+                          }
+                        }
+                      }]
+                    ).exec(function (err) {
                       if (err) res.status(500).send(err);
                       else {
-                        rooms.forEach(room => {
-                          room.room_code = room.room_code.replace(user.username, req.query.newUsername);
-                          room.save();
+                        bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+                          if (err) return next(err);
+                          bcrypt.hash(user.username, salt, function (err4, hash) {
+                            if (err4) return next(err4);
+                            return res.status(200).json({ username: hash });
+                          });
                         });
-                        res.status(200).json(rooms);
                       }
                     });
                   }

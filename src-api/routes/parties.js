@@ -72,7 +72,7 @@ router.post('/', [
                     cube_name: cube._id,
                     room_code: req.body.room,
                     competitors_number: 1
-                  }).then(() => {
+                  }).then(room => {
                     if (err) res.status(500).send(err);
                     else manageParty(user, solve, room, err, res);
                   });
@@ -93,7 +93,7 @@ router.post('/', [
   });
 });
 
-function manageParty (user, solve, room, err, res) {
+function manageParty(user, solve, room, err, res) {
   // If the party (user + room) exists, adds the solve. If not, creates a new one and with that first solve
   Party.findOne({ "data.user_id": user._id, "data.room_id": room._id }).exec(function (err, party) {
     if (err) res.status(500).send(err);

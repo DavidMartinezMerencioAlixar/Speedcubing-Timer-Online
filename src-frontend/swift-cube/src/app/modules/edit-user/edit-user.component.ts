@@ -20,7 +20,7 @@ export class EditUserComponent implements AfterViewInit {
   }
 
   async editUser() {
-    const URL = "https://swiftcube-production.up.railway.app/users?" + new URLSearchParams({
+    const URL = "http://localhost:5000/users?" + new URLSearchParams({
       oldUsername: localStorage.getItem("user.name") || "",
       newUsername: this.user.username
     });
@@ -36,25 +36,9 @@ export class EditUserComponent implements AfterViewInit {
     }).then(response => {
       if (response.status === 200) {
         response.json().then(user => {
-          console.log(user, this.user.username);
-
           localStorage.setItem("user.data", user.username);
           localStorage.setItem("user.name", this.user.username);
-          const oldRoomCode = localStorage.getItem("room");
-
-          if (oldRoomCode !== null) {
-            const URL = "https://swiftcube-production.up.railway.app/rooms?" + new URLSearchParams({
-              oldRoomCode: oldRoomCode
-            });
-
-            const response = fetch(URL, {
-              method: "PUT",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({ room_code: `${this.user.username}-local` })
-            }).then(response => { localStorage.setItem("room", `${this.user.username}-local`); });
-          }
+          localStorage.setItem("room", `${this.user.username}-local-3x3x3`);
         });
         window.location.href = "";
       } else {
@@ -66,7 +50,7 @@ export class EditUserComponent implements AfterViewInit {
   }
 
   async deleteUser() {
-    const URL = `https://swiftcube-production.up.railway.app/users/${localStorage.getItem("user.name")}`;
+    const URL = `http://localhost:5000/users/${localStorage.getItem("user.name")}`;
     const encryptedPassword = CryptoJS.AES.encrypt(this.user.password, "/nm8z3}KkeXVpsL").toString();
 
     const response = await fetch(URL, {

@@ -48,7 +48,6 @@ export class HomeComponent implements AfterViewInit {
     });
 
     deleteSolveButton.addEventListener("click", event => {
-      console.log((event.target as HTMLButtonElement).getAttribute("solve_round"));
       const solvePosition = Number.parseInt((event.target as HTMLButtonElement).getAttribute("solve_round")!) - 1
       this.deleteSolve(solvePosition);
     });
@@ -218,8 +217,7 @@ export class HomeComponent implements AfterViewInit {
   }
 
   deleteSolve(solvePosition: Number) {
-    console.log("deleteSolve");
-    const URL = "https://swiftcube-production.up.railway.app/solves?" + new URLSearchParams({
+    const URL = "http://localhost:5000/solves?" + new URLSearchParams({
       solve_position: solvePosition.toString(),
       username: localStorage.getItem("user.name")!,
       room_code: localStorage.getItem("room")!
@@ -242,7 +240,7 @@ export class HomeComponent implements AfterViewInit {
     const username = localStorage.getItem("user.name");
     const room = localStorage.getItem("room");
 
-    const URL = "https://swiftcube-production.up.railway.app/parties";
+    const URL = "http://localhost:5000/parties";
 
     const response = fetch(URL, {
       method: "POST",
@@ -269,7 +267,7 @@ export class HomeComponent implements AfterViewInit {
     timesTable.innerHTML = "";
     timesTable.appendChild(timesTableHeader);
 
-    const URL = "https://swiftcube-production.up.railway.app/parties/actual?" + new URLSearchParams({
+    const URL = "http://localhost:5000/parties/actual?" + new URLSearchParams({
       username: localStorage.getItem("user.name")!,
       room_code: localStorage.getItem("room")!,
       cube_name: cubeName!
@@ -614,7 +612,6 @@ export class HomeComponent implements AfterViewInit {
   }
 
   antiClockwiseMovement(upFace: any, leftFace: any, frontFace: any, rightFace: any, backFace: any) {
-    // console.log("antiClockwiseMovement", upFace, leftFace, frontFace, rightFace, backFace);
     const edgeUpU = upFace[1];
     const edgeUpL = upFace[3];
     const edgeUpR = upFace[5];
@@ -673,7 +670,6 @@ export class HomeComponent implements AfterViewInit {
   }
 
   doubleMovement(upFace: any, leftFace: any, frontFace: any, rightFace: any, backFace: any) {
-    // console.log("doubleMovement", upFace, leftFace, frontFace, rightFace, backFace);
     const edgeUpU = upFace[1];
     const edgeUpL = upFace[3];
     const edgeUpR = upFace[5];
@@ -762,7 +758,7 @@ export class HomeComponent implements AfterViewInit {
   }
 
   async getCubeData(cubeName: String) {
-    const URL = `https://swiftcube-production.up.railway.app/cubes/${cubeName}`;
+    const URL = `http://localhost:5000/cubes/${cubeName}`;
 
     const response = await fetch(URL
     ).then(response => {
@@ -781,7 +777,7 @@ export class HomeComponent implements AfterViewInit {
   }
 
   async getAllCubes() {
-    const URL = "https://swiftcube-production.up.railway.app/cubes";
+    const URL = "http://localhost:5000/cubes";
 
     const response = await fetch(URL
     ).then(response => {
