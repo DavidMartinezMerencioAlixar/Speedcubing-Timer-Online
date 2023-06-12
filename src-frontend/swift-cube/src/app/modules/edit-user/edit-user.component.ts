@@ -26,7 +26,7 @@ export class EditUserComponent implements AfterViewInit {
   }
 
   async editUser() {
-    const URL = "http://localhost:5000/users?" + new URLSearchParams({
+    const URL = "https://swiftcube-production.up.railway.app/users?" + new URLSearchParams({
       oldUsername: localStorage.getItem("user.name") || "",
       newUsername: this.user.username
     });
@@ -56,7 +56,7 @@ export class EditUserComponent implements AfterViewInit {
   }
 
   async deleteUser() {
-    const URL = `http://localhost:5000/users/${localStorage.getItem("user.name")}`;
+    const URL = `https://swiftcube-production.up.railway.app/users/${localStorage.getItem("user.name")}`;
     const encryptedPassword = CryptoJS.AES.encrypt(this.user.password, "/nm8z3}KkeXVpsL").toString();
 
     const response = await fetch(URL, {
