@@ -4,14 +4,35 @@
     width: 315px;
     height: 250px;
     position: relative;
-    display: flex;
-    justify-content: center;
 }
 
 #notAvailable {
     font-family: 'Alkatra', sans-serif;
     font-size: 20px;
     align-self: center;
+}
+
+#hideIcon {
+    font-size: 20px;
+    color: #959595;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin-top: 5px;
+    margin-left: 5px;
+    transform: rotate(90deg);
+}
+
+#hideIcon:hover {
+    cursor: pointer;
+    font-size: 25px;
+    transition: font-size 0.1s;
+    transition: font-weight 0.1s;
+    font-weight: bold;
+}
+
+.openIcon {
+    transform: rotate(180deg);
 }
 
 .face {

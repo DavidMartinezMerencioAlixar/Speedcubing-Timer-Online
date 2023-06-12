@@ -39,7 +39,9 @@ nav {
     top: 30px;
 }
 
-#logout-img:hover, #logo:hover, #userData:hover {
+#logout-img:hover,
+#logo:hover,
+#userData:hover {
     cursor: pointer;
 }
 
@@ -55,4 +57,55 @@ nav {
 
 .noDisplay {
     display: none;
+}
+
+@media (max-width: 768px) {
+    nav {
+        height: 120px;
+    }
+
+    #logo-text {
+        font-size: 20px;
+    }
+
+    #controlPanel {
+        font-size: 12px;
+        margin-right: 5px;
+        height: 25px;
+        padding: 0 5px;
+    }
+
+    #userData {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        right: 20px;
+    }
+
+    #user-info {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+
+    #user-img {
+        margin-bottom: 5px;
+        order: 2;
+        width: 40px;
+        height: auto;
+    }
+
+    #username {
+        order: 1;
+        border-radius: 5px;
+        font-size: 10px;
+    }
+
+    #controlPanel {
+        order: 3;
+        font-size: 10px;
+        height: 20px;
+        z-index: 5;
+    }
 }

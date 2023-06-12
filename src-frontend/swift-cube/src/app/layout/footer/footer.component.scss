@@ -1,7 +1,6 @@
 nav {
     background-color: #000074;
     width: 100%;
-    height: 175px;
     padding-left: 40px;
     text-align: left;
 }
@@ -38,4 +37,13 @@ nav.row {
 #license-img {
     width: auto;
     height: 96px;
+}
+
+@media (max-width: 930px) {
+
+    .col-md-8,
+    .col-md-4 {
+        width: 100% !important;
+        text-align: center;
+    }
 }

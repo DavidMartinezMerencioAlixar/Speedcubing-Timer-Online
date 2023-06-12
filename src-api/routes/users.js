@@ -18,7 +18,7 @@ router.get('/', function (req, res, next) {
 
 /* GET all users with a filter */
 router.get('/filter/:filter', function (req, res, next) {
-  User.find({ username: { $regex: req.params.filter } }).sort({ admin: -1, username: 'asc' }).exec(function (err, users) {
+  User.find({ username: { $regex: req.params.filter, $options: "i" } }).sort({ admin: -1, username: 'asc' }).exec(function (err, users) {
     if (err) res.status(500).send(err);
     else res.status(200).json(users);
   });

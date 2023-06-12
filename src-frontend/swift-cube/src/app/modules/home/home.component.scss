@@ -63,7 +63,7 @@ app-times-table {
     height: 100%;
     position: absolute;
     left: 0;
-    top: 0;
+    bottom: 0;
 }
 
 #showScramblePopup h1 {
@@ -74,7 +74,10 @@ app-times-table {
     border-radius: 8px;
 }
 
-#showScrambleTable, tr, th, td {
+#showScrambleTable,
+tr,
+th,
+td {
     border: 1px solid #959595;
     text-align: center;
 }
@@ -103,4 +106,22 @@ app-times-table {
 
 .noDisplay {
     display: none;
+}
+
+@media (max-width: 1120px) {
+    app-times-table {
+        height: 30vh;
+    }
+
+    app-visual-scramble {
+        transform: scale(0.75);
+        transform-origin: bottom right;
+    }
+}
+
+@media (max-width: 380px) {
+    app-visual-scramble {
+        transform: scale(0.6);
+        transform-origin: bottom right;
+    }
 }

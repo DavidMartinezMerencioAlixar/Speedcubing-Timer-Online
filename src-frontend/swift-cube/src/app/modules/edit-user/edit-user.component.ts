@@ -19,8 +19,14 @@ export class EditUserComponent implements AfterViewInit {
     return new User("", "", "");
   }
 
+  validPassword() {
+    return !document.querySelectorAll("input")[2].classList.contains("ng-dirty") ||
+      document.querySelectorAll("input")[2].classList.contains("ng-dirty") &&
+      this.user.password.match(/^(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/);
+  }
+
   async editUser() {
-    const URL = "https://swiftcube-production.up.railway.app/users?" + new URLSearchParams({
+    const URL = "http://localhost:5000/users?" + new URLSearchParams({
       oldUsername: localStorage.getItem("user.name") || "",
       newUsername: this.user.username
     });
@@ -50,7 +56,7 @@ export class EditUserComponent implements AfterViewInit {
   }
 
   async deleteUser() {
-    const URL = `https://swiftcube-production.up.railway.app/users/${localStorage.getItem("user.name")}`;
+    const URL = `http://localhost:5000/users/${localStorage.getItem("user.name")}`;
     const encryptedPassword = CryptoJS.AES.encrypt(this.user.password, "/nm8z3}KkeXVpsL").toString();
 
     const response = await fetch(URL, {

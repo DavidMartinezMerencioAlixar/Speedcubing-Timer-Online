@@ -59,3 +59,15 @@
     font-weight: bold;
     margin-right: 10px;
 }
+
+#searchUserInput {
+    width: 200px;
+    height: 30px;
+    border: 0.5px solid #959595;
+    border-radius: 12px;
+}
+
+#searchUserInput::placeholder {
+    color: #959595;
+    font-style: italic;
+}

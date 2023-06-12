@@ -11,20 +11,26 @@
                 </div>
                 <div class="form-group">
                     <label for="password">Old password *</label>
-                    <input type="password" class="form-control showValidation" id="password" required [(ngModel)]="user.password"
-                        name="password" placeholder="old password" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$">
+                    <input type="password" class="form-control showValidation" id="password" required
+                        [(ngModel)]="user.password" name="password" placeholder="old password">
                 </div>
                 <div class="form-group">
                     <label for="confirmPassword">New password</label>
-                    <input type="password" class="form-control showValidation" id="confirmPassword" [(ngModel)]="user.confirmPassword"
-                        name="confirmPassword" placeholder="new password" pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$">
+                    <input type="password" class="form-control showValidation" id="confirmPassword"
+                        [(ngModel)]="user.confirmPassword" name="confirmPassword" placeholder="new password"
+                        pattern="(?=^.{8,}$)((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$">
                     <br>
                 </div>
+                <div *ngIf="!validPassword()" class="alert alert-danger">
+                    8 characters length, 1 uppercase, 1 lowercase and 1 special character
+                </div>
                 <diV class="centeredContent">
-                    <app-button buttonType="submit" buttonText="Update" [isDisabled]="!editForm.form.valid"></app-button>
+                    <app-button buttonType="submit" buttonText="Update"
+                        [isDisabled]="!editForm.form.valid"></app-button>
                 </diV>
             </form>
-            <button id="deleteUserButton" (click)="deleteUser()" [disabled]="!editForm.form.valid"><img src="assets/img/delete-icon.png"></button>
+            <button id="deleteUserButton" (click)="deleteUser()" [disabled]="!editForm.form.valid"><img
+                    src="assets/img/delete-icon.png"></button>
         </div>
     </div>
 </div>

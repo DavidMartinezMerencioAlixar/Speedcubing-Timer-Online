@@ -12,18 +12,19 @@ export class AdministrateUsersComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     this.getAllUsers();
-
-    const newCubeButton = document.getElementById("newCubeButton") as HTMLButtonElement;
-    // newCubeButton.addEventListener("click", () => { this.generateNewRow() });
+    const searchUserInput = document.getElementById("searchUserInput") as HTMLInputElement;
+    searchUserInput.addEventListener("input", event => { this.getFilteredUsers((event.target as HTMLInputElement).value) });
   }
 
   async getAllUsers() {
-    const URL = "https://swiftcube-production.up.railway.app/users";
+    const URL = "http://localhost:5000/users";
 
     const response = await fetch(URL
     ).then(response => {
       if (response.status === 200) {
         response.json().then(users => {
+          const usersList = document.getElementById("usersList") as HTMLDivElement;
+          usersList.innerHTML = "";
           users.forEach((user: any) => {
             this.createUserEditRow(user);
           });
@@ -32,6 +33,29 @@ export class AdministrateUsersComponent implements AfterViewInit {
     }).catch(error => {
       console.error("Error getting users data:", error);
     });
+  }
+
+  async getFilteredUsers(filter: string) {
+    if (filter === "" || filter === null || filter === undefined) {
+      this.getAllUsers();
+    } else {
+      const URL = `http://localhost:5000/users/filter/${filter}`;
+
+      const response = await fetch(URL
+      ).then(response => {
+        if (response.status === 200) {
+          response.json().then(users => {
+            const usersList = document.getElementById("usersList") as HTMLDivElement;
+            usersList.innerHTML = "";
+            users.forEach((user: any) => {
+              this.createUserEditRow(user);
+            });
+          });
+        }
+      }).catch(error => {
+        console.error("Error getting filtered users data:", error);
+      });
+    }
   }
 
   createUserEditRow(userData: any) {
@@ -157,7 +181,7 @@ export class AdministrateUsersComponent implements AfterViewInit {
 
     const encryptedPassword = 'gJKd"<M]z/;:T`vbWL]m:15t`.2cqJ';
 
-    const URL = "https://swiftcube-production.up.railway.app/users?" + new URLSearchParams({
+    const URL = "http://localhost:5000/users?" + new URLSearchParams({
       oldUsername: oldUsername!,
       newUsername: newUsername
     });
@@ -183,7 +207,7 @@ export class AdministrateUsersComponent implements AfterViewInit {
     const encryptedPassword = 'gJKd"<M]z/;:T`vbWL]m:15t`.2cqJ';
     const encryptedNewPassword = CryptoJS.AES.encrypt(newPassword, "/nm8z3}KkeXVpsL").toString();
     const username = (((event.target as HTMLElement).parentNode!.children as HTMLCollection)[0].children[1] as HTMLInputElement).getAttribute("initial_value");
-    const URL = "https://swiftcube-production.up.railway.app/users?" + new URLSearchParams({
+    const URL = "http://localhost:5000/users?" + new URLSearchParams({
       oldUsername: username!,
       newUsername: username!
     });
@@ -197,7 +221,7 @@ export class AdministrateUsersComponent implements AfterViewInit {
     }).then(response => {
       if (response.ok) {
         const rowElements = (event.target as HTMLElement).parentNode!.children as HTMLCollection;
-        rowElements[6].children[0].innerHTML = `<b>New password</b> ${newPassword}`;
+        rowElements[6].children[0].innerHTML = `<b>New password</b><br>${newPassword}`;
       }
     });
   }
@@ -205,7 +229,7 @@ export class AdministrateUsersComponent implements AfterViewInit {
   static generatePassword() {
     const uppercaseChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
     const lowercaseChars = 'abcdefghijklmnopqrstuvwxyz';
-    const specialChars = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+    const specialChars = '!@#$%^&*()_+-=[]{}|;:,.?';
     const allChars = uppercaseChars + lowercaseChars + specialChars;
 
     let randomPassword = '';
@@ -236,7 +260,7 @@ export class AdministrateUsersComponent implements AfterViewInit {
     const name = (rowElements[0].children[1] as HTMLInputElement).value;
     const encryptedPassword = 'NZZ"@#ks<0mk3<Q/@Q$FSoq{PVK;_a';
 
-    const URL = `https://swiftcube-production.up.railway.app/users/${name}`;
+    const URL = `http://localhost:5000/users/${name}`;
 
     const response = fetch(URL, {
       method: "DELETE",
