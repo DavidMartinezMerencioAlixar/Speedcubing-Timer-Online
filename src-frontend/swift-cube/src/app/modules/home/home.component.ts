@@ -19,8 +19,30 @@ export class HomeComponent implements AfterViewInit {
     const cubeNames = <HTMLSelectElement>document.getElementById("cubeNames");
     const notAvailable = <HTMLSelectElement>document.getElementById("notAvailable");
     const visualScrambleDiv = <HTMLSelectElement>document.getElementById("visualScrambleDiv");
+    const scrambleDiv = <HTMLDivElement>document.getElementById("scrambleDiv");
     cubeNames?.addEventListener("change", () => {
       const selectedCube = cubeNames.options[cubeNames.selectedIndex].value;
+
+      let heightValue = "";
+      switch (selectedCube) {
+        case "3x3x3": case "3x3x3 OH": case "3x3x3 BLD": case "2x2x2":
+          heightValue = "100px";
+          break;
+        case "4x4x4":
+          heightValue = "130px";
+          break;
+        case "5x5x5":
+          heightValue = "150px";
+          break;
+        case "6x6x6":
+          heightValue = "190px";
+          break;
+        case "7x7x7":
+          heightValue = "230px";
+          break;
+      }
+      scrambleDiv.style.height = heightValue;
+
       if (selectedCube.indexOf("3x3x3") !== -1) {
         visualScrambleDiv.style.display = "block";
         notAvailable.style.display = "none";

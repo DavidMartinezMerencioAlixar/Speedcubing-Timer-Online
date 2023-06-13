@@ -125,3 +125,9 @@ td {
         transform-origin: bottom right;
     }
 }
+
+@media (max-width: 768px) {
+    #time {
+        font-size: 3.5rem;
+    }
+}

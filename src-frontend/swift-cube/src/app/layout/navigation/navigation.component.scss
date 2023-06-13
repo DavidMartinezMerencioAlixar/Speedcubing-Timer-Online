@@ -28,6 +28,13 @@ nav {
     top: 18px;
 }
 
-#user-img:hover, #logo:hover {
+#user-img:hover,
+#logo:hover {
     cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    #logo-text {
+        font-size: 20px;
+    }
 }

@@ -31,6 +31,8 @@ nav {
     position: absolute;
     right: 40px;
     top: 18px;
+    display: flex;
+    align-items: center;
 }
 
 #logout {
@@ -76,9 +78,7 @@ nav {
     }
 
     #userData {
-        display: flex;
         flex-direction: column;
-        align-items: center;
         right: 20px;
     }
 
