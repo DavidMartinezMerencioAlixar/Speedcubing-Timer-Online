@@ -6,11 +6,6 @@ var Party = require("../models/Party");
 var Room = require("../models/Room");
 var User = require("../models/User");
 
-/* GET all solves */
-router.get('/', function(req, res, next) {
-  res.send('solve location');
-});
-
 /* POST a solve */
 router.post('/', [
   body('time', 'Enter a valid time').exists(),
@@ -33,24 +28,15 @@ router.post('/', [
 });
 
 /* DELETE a solve */
-// router.delete("/:id", function (req, res, next) {
-//   Party.findOne({ solve_ids: { $eq: req.params.id } }).exec(function(party) {
-//     console.log(party);
-//     Solve.findByIdAndRemove(req.params.id, function (err, solve) {
-//       if (err) return res.status(500).send(err);
-//       else return res.sendStatus(200).json(solve);
-//     });
-//   });
-// });
-
-/* DELETE a solve */
 router.delete('/', function (req, res, next) {
-  // Buscar user por username y obtener el id
-  // Buscar room por room_code y obtener el id
-  // Buscar la party por username y room_code
-  // Obtener la posición del solve de a partir de :solvePosition
-  // Obtener el id del solve y elminarlo del array
-  // Eliminar el solve por su id
+  /*
+   * Search User by username and get ID
+   * Search Room by room_code and get ID
+   * Search party by User ID and Room ID
+   * Get Solve position in array using <solve_position>
+   * Get Solve ID and delete it from the array
+   * Delete Solve by ID
+   */
   Room.findOne({ room_code: req.query.room_code }).exec(function (err, room) {
     if (err) res.status(500).send(err)
     else if (room) {
