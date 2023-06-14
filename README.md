@@ -4,7 +4,7 @@
 #### Autor: [David Martínez Merencio](https://github.com/DavidMartinezMerencioAlixar)
 #### Tutor: [Antonio Gabriel González Casado](https://github.com/antonio-gabriel-gonzalez-casado)
 #### Fecha de Inicio: 14-03-2023
-#### Fecha de Finalización: DD-MM-YYYY
+#### Fecha de Finalización: 14-06-2023
 
 ## Breve descripción del proyecto
 
